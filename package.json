@@ -1,0 +1,19 @@
+{
+  "name": "movies-app-api",
+  "version": "1.0.0",
+  "description": "movies webapp",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DEstebanP/movies-app-api-js.git"
+  },
+  "author": "@Destep",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DEstebanP/movies-app-api-js/issues"
+  },
+  "homepage": "https://github.com/DEstebanP/movies-app-api-js#readme"
+}
