@@ -4,10 +4,92 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movies</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./node_modules/normalize.css/normalize.css">
     <link rel="stylesheet" href="./styles/style.css">
 </head>
 <body>
-    <h1>Movies</h1>
+    <header class="header">
+        <img class="header__appLogo" src="./assets/logo.svg" alt="logo">
+        <div class="header__right">
+            <form class="searchForm">
+                <input class="searchForm__input inactive" type="text">
+                <button class="searchForm__btn">
+                    <img class="searchForm__logo logo" src="./assets/search.svg" alt="search"></button>
+            </form>
+            <img class="header__bell logo" src="./assets/bell-filled.svg" alt="notifications">
+            <img src="./assets/user.svg" alt="account" class="header__user logo">
+        </div>
+    </header>
+    <main>
+        <section class="section-image">
+            <p class="section-image__film-title">Peaky Blinders</p>
+            <img class="section-image__img" src="./assets/large-image.png" alt="">
+        </section>
+
+        <section class="section-trending">
+            <h2 class="section-trending__title">Tendencias</h2>
+
+            <article class="section-trending__filmList">
+                <div class="film">
+                    <img src="./assets/cover-film.png" class="film-img" alt="Nombre de la película"/>
+                    <h3 class="film-title">Interstellar</h3>
+                    <p class="film-year">2013</p>
+                    <p class="film-rate">⭐</p>
+                </div>
+                <div class="film">
+                    <img src="./assets/cover-film.png" class="film-img" alt="Nombre de la película"/>
+                    <h3 class="film-title">Interstellar</h3>
+                    <p class="film-year">2013</p>
+                    <p class="film-rate">⭐</p>
+                </div>
+                <div class="film">
+                    <img src="./assets/cover-film.png" class="film-img" alt="Nombre de la película"/>
+                    <h3 class="film-title">Interstellar</h3>
+                    <p class="film-year">2013</p>
+                    <p class="film-rate">⭐</p>
+                </div>
+                <div class="film">
+                    <img src="./assets/cover-film.png" class="film-img" alt="Nombre de la película"/>
+                    <h3 class="film-title">Interstellar</h3>
+                    <p class="film-year">2013</p>
+                    <p class="film-rate">⭐</p>
+                </div>
+                <div class="film">
+                    <img src="./assets/cover-film.png" class="film-img" alt="Nombre de la película"/>
+                    <h3 class="film-title">Interstellar</h3>
+                    <p class="film-year">2013</p>
+                    <p class="film-rate">⭐</p>
+                </div>
+            </article>
+            <button class="section-trending__btn">See More</button>
+        </section>
+
+        <section class="section-trailer">
+            <div class="section-trailer__video">
+                <img class="section-trailer__img" src="./assets/image-trailer.png" alt="image-trailer">
+                <img class="section-trailer__play" src="./assets/play-icon.svg" alt="">
+            </div>
+            <div class="section-trailer__content">
+                <h2 class="section-trailer__title">Stranger Things</h2>
+                <p class="section-trailer__text">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quibusdam assumenda, cumque at praesentium aperiam doloremque dolorum non, eaque dolor ipsam hic impedit temporibus tempora repellat repellendus natus, ad asperiores rem.</p>
+                <p class="section-trailer__rate">⭐⭐⭐⭐⭐</p>
+                <div class="trailer-content__actors">
+                    <img src="./assets/actor-avatar.svg" alt="" class="actor-img">
+                    <img src="./assets/actor-avatar.svg" alt="" class="actor-img">
+                    <img src="./assets/actor-avatar.svg" alt="" class="actor-img">
+                    <img src="./assets/actor-avatar.svg" alt="" class="actor-img">
+                    <img src="./assets/actor-avatar.svg" alt="" class="actor-img">
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+
+    </footer>
+
     <script type="module" src="./src/main.js"></script>
 </body>
 </html>

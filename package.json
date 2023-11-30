@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/DEstebanP/movies-app-api-js/issues"
   },
-  "homepage": "https://github.com/DEstebanP/movies-app-api-js#readme"
+  "homepage": "https://github.com/DEstebanP/movies-app-api-js#readme",
+  "dependencies": {
+    "normalize.css": "^8.0.1"
+  }
 }
