@@ -34,6 +34,7 @@ h1, h2, h3, p {
     padding: 0 20px;
     width: 100%;
     height: 70px;
+    z-index: 1;
 }
 .header__right {
     display: flex;
@@ -89,7 +90,7 @@ h1, h2, h3, p {
     width: 80%;
     margin: 0 auto 60px;
 }
-.section-trending__title {
+.section-trending__title, .popular__title {
     font-size: 32px;
     margin: 10px 0 20px;
 }
@@ -106,7 +107,6 @@ h1, h2, h3, p {
     "main main"
     "title title"
     "year rate";
-    width: fit-content;
     padding: 0 10px 10px;
     width: 100%;
     max-width: 250px;
@@ -145,6 +145,7 @@ h1, h2, h3, p {
 .section-trailer {
     min-width: 320px;
     width: 100%;
+    margin-bottom: 60px;
 }
 .section-trailer__video {
     position: relative;
@@ -176,6 +177,125 @@ h1, h2, h3, p {
 .actor-img {
     border-radius: 50%;
     margin-right: 10px;
+}
+
+.popular {
+    margin-bottom: 60px;
+}
+.popular__title {
+    margin-left: 16px;
+}
+.popular__filmList {
+    display: flex;
+    width: 100%;
+    height: 320px;
+    padding: 0 10px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+}
+
+.film--secondary {
+    display: block;
+    position: relative;
+    scroll-snap-align: center;
+    width: 70%;
+    min-width: 235px;
+    max-width: 380px;
+    min-height: 280px;
+    margin: 0 16px;
+    padding: 0;
+    overflow: hidden;
+}
+.film-title--secondary, .film-year--secondary, .film-rate--secondary, .film-description {
+    position: absolute;
+} 
+.film-title--secondary {
+    top: 40%;
+    left: 10px;
+    font-size: 32px;
+}
+.film-img--secondary {
+    height: 100%;
+    object-fit: cover;
+}
+.film--secondary::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.6) 50%, rgba(0, 0, 0, 0.8));
+}
+.film-description {
+    top: 55%;
+    padding: 0 10px;
+    font-size: 1.4rem;
+}
+.film-year--secondary {
+    bottom: 20px;
+    left: 10px;
+    font-size: 1.8rem;
+}
+.film-rate--secondary {
+    bottom: 20px;
+    right: 16px;
+    font-size: 1.8rem;
+}
+
+
+.explore {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    margin-bottom: 30px;
+    cursor: pointer;
+}
+.explore__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.explore__title {
+    position: absolute;
+    top: 50%;
+    font-size: 3.2rem;
+    transform: translateY(-50%);
+    left: 10%;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+.explore__search {
+    position: absolute;
+    top: 50%;
+    width: 46px;
+    transform: translateY(-50%);
+    right: 14%;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.filmDetail {
+    position: relative;
+    width: 100%;
+}
+.filmDetail__img {
+    position: fixed;
+    top: 70px;
+    width: 100%;
+    height: 480px;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.35) 19.27%, rgba(0, 0, 0, 0) 29.17%), url('https://pics.filmaffinity.com/Deadpool-777527803-large.jpg');
+    background-size: cover;
+    background-position: center; /* Asegura que la imagen esté centrada */
+    background-repeat: no-repeat;
+    z-index: -1;
+}
+.filmDetail__container {
+    position: absolute;
+    margin-top: 480px;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    padding: 32px 24px;
+    background-color: var(--base-color);
 }
 
 /* Navigation */
