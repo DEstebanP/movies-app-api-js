@@ -2,8 +2,10 @@
 
 :root {
     --base-color: #090911;
+    --base-color-lighter: #31304D;
     --secondary-color: #F34096;
     --text-color: #F1EEF5;
+    --text-color-secondary: #B6BBC4;
     --text-font: 'Lato', sans-serif; /* 400, 700 */
 }
 
@@ -31,6 +33,7 @@ h1, h2, h3, p {
     align-items: center;
     justify-content: space-between;
     position: fixed;
+    top: 0;
     padding: 0 20px;
     width: 100%;
     height: 70px;
@@ -95,7 +98,7 @@ h1, h2, h3, p {
     margin: 10px 0 20px;
 }
 
-.section-trending__filmList {
+.section-trending__filmList, .categories__cards {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     width: 100%;
@@ -185,7 +188,7 @@ h1, h2, h3, p {
 .popular__title {
     margin-left: 16px;
 }
-.popular__filmList {
+.popular__filmList, .relatedFilms {
     display: flex;
     width: 100%;
     height: 320px;
@@ -193,6 +196,13 @@ h1, h2, h3, p {
     overflow-x: auto;
     overscroll-behavior-x: contain;
     scroll-snap-type: x mandatory;
+}
+.popular__filmList::-webkit-scrollbar, .relatedFilms::-webkit-scrollbar {
+    background-color: var(--base-color-lighter);
+    height: 3px;
+} 
+.popular__filmList::-webkit-scrollbar-thumb, .relatedFilms::-webkit-scrollbar-thumb {
+    background-color: var(--text-color-secondary);
 }
 
 .film--secondary {
@@ -203,7 +213,7 @@ h1, h2, h3, p {
     min-width: 235px;
     max-width: 380px;
     min-height: 280px;
-    margin: 0 16px;
+    margin: 0 16px 16px;
     padding: 0;
     overflow: hidden;
 }
@@ -219,7 +229,7 @@ h1, h2, h3, p {
     height: 100%;
     object-fit: cover;
 }
-.film--secondary::before {
+.film--secondary::before, .categoryCard::before {
     content: "";
     position: absolute;
     top: 0;
@@ -227,6 +237,9 @@ h1, h2, h3, p {
     width: 100%;
     height: 100%;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.6) 50%, rgba(0, 0, 0, 0.8));
+}
+.categoryCard::before {
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.8));
 }
 .film-description {
     top: 55%;
@@ -274,6 +287,7 @@ h1, h2, h3, p {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
+
 .filmDetail {
     position: relative;
     width: 100%;
@@ -285,18 +299,161 @@ h1, h2, h3, p {
     height: 480px;
     background: linear-gradient(180deg, rgba(0, 0, 0, 0.35) 19.27%, rgba(0, 0, 0, 0) 29.17%), url('https://pics.filmaffinity.com/Deadpool-777527803-large.jpg');
     background-size: cover;
-    background-position: center; /* Asegura que la imagen esté centrada */
+    background-position: top;
     background-repeat: no-repeat;
     z-index: -1;
 }
 .filmDetail__container {
     position: absolute;
+    width: 100%;
     margin-top: 480px;
     border-top-left-radius: 16px;
     border-top-right-radius: 16px;
     padding: 32px 24px;
     background-color: var(--base-color);
 }
+.filmDetail__title {
+    display: inline-block;
+    width: fit-content;
+    font-size: 2.8rem;
+    margin: 0 35% 4px 0;
+}
+.filmDetail__score {
+    font-weight: 700;
+}
+.filmDetail__info {
+    font-size: 1.2rem;
+    margin-bottom: 16px;
+    color: var(--text-color-secondary);
+}
+.filmDetail__info span {
+    margin-right: 30px;
+}
+.filmDetail__info :nth-child(3) {
+    display: block;
+    margin-top: 4px;
+}
+.filmDetail__trailer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    column-gap: 8px;
+    width: 100%;
+    padding: 8px 0;
+    margin-bottom: 16px;
+    background-color: var(--text-color);
+    border: none;
+    border-radius: 4px;
+    color: var(--base-color);
+    font-weight: 700;
+}
+.filmDetail__title2 {
+    margin: 20px 0 10px;
+}
+
+.relatedFilms {
+    height: auto;
+    padding: 0;
+}
+.relatedFilms--film {
+    min-width: 150px;
+}
+
+/* Explore */
+.categories {
+    width: 100%;
+    margin-top: 80px;
+}
+.searchForm--explore {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 24px;
+}
+.searchForm__input--explore {
+    border-radius: 4px 0 0 4px;
+    padding: 8px 4px;
+}
+.searchForm__btn--explore {
+    background-color: var(--secondary-color);
+    height: 35.1px;
+    width: 36px;
+    border-radius: 0 4px 4px 0;
+}
+.categories__title {
+    display: inline-block;
+    margin: 0 0 12px 12px;
+    width: fit-content;
+}
+.categories__btn {
+    width: fit-content;
+    float: right;
+    margin: 10px 20px 0 0;
+    border-radius: 8px;
+    border: 2px solid var(--text-color);
+}
+.categories__btn button {
+    border: none;
+    background-color: transparent;
+}
+.categories__btn :first-child {
+    background-color: var(--text-color);
+    border-radius: 4px 0 0 4px;
+}
+.categories__btn :nth-child(2) {
+    color: var(--text-color);
+}
+.categories span {
+    display: inline-block;
+    margin: 0 16px 20px 12px;
+}
+
+.categoryCard {
+    position: relative;
+    padding: 0 10px 10px;
+    width: 100%;
+    height: fit-content;
+    max-width: 250px;
+    cursor: pointer;
+}
+.categoryCard__img {
+    width: 100%;
+}
+.categoryCard__title {
+    position: absolute;
+    text-align: center;
+    top: 60%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+
+.searchResults {
+    width: 90%;
+    padding: 0 10px;
+    margin: 80px auto 0;
+    margin-bottom: 20px;
+}
+.searchResults__back {
+    width: 18px;
+    margin-bottom: 12px;
+}
+.searchResults >div {
+    display: flex;
+    margin-bottom: 8px;
+    justify-content: space-between;
+    align-items: center;
+}
+.searchResults >div h1 {
+    font-size: 36px;
+}
+.searchResults__search {
+    width: 26px;
+}
+.searchResults__subtitle {
+    font-size: 1.6rem;
+}
+
 
 /* Navigation */
 .inactive {
