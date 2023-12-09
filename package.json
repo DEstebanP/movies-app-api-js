@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/DEstebanP/movies-app-api-js#readme",
   "dependencies": {
+    "axios": "^1.6.2",
     "normalize.css": "^8.0.1"
   }
 }

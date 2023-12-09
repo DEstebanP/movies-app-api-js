@@ -1,5 +1,12 @@
-import { API_KEY } from "./secrets.mjs";
+import { API_KEY, API_KEY_TOKEN } from "./secrets.mjs";
+const api = axios.create({
+    baseURL: 'https://api.themoviedb.org/3',
+    headers: {
+        Authorization: `Bearer ${API_KEY_TOKEN}`
+    }
+});
 const API = 'https://api.themoviedb.org/3';
+
 
 const searchBtn = document.getElementById('search-btn');
 function adjustActionAccordingToScreen() {
@@ -46,15 +53,13 @@ function getMoviePhotoGenre(dataMovieResults) {
 async function getMoviesGenres() {
     try {
         //get genres
-    const res = await fetch(`${API}/genre/movie/list?api_key=${API_KEY}`);
-    const data = await res.json();
+    const { data }= await api.get('/genre/movie/list')
     const genres = data.genres;
     console.log(genres);
     //get a movie photo from a genre
     for (const genre of genres) {
-        const resMovie = await fetch(`${API}/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&with_genres=${genre.id}&api_key=${API_KEY}`);
-        const dataMovie = await resMovie.json();
-        const categoryImg = getMoviePhotoGenre(dataMovie.results);
+        const {data} = await api.get(`/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&with_genres=${genre.id}`);
+        const categoryImg = getMoviePhotoGenre(data.results);
 
         const categoriesCards = document.querySelector('.categories__cards');
 
@@ -80,8 +85,7 @@ async function getMoviesGenres() {
 }
 getMoviesGenres();
 async function getTrendingPreview() {
-    const res = await fetch(`${API}/trending/movie/day?api_key=${API_KEY}`);
-    const data = await res.json();
+    const {data} = await api.get('/trending/movie/day');
     console.log(data);
 
     const movies = data.results;
