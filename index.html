@@ -30,19 +30,25 @@
         </section>
 
         <section class="searchResults inactive">
-            <img class="searchResults__back" src="./assets/chevron-left-solid.svg" alt="">
-            <div>
+            <img class="searchResults__back arrow-back" src="./assets/chevron-left-solid.svg" alt="">
+            <form class="searchForm searchForm--explore">
+                <input class="searchForm__input searchForm__input--explore " type="text" placeholder="Search">
+                <button type="button" id="searchBtn" class="searchForm__btn searchForm__btn--explore">
+                    <img class="searchForm__logo logo" src="./assets/search.svg" alt="search"></button>
+            </form>
+            <div class="searchResults__title">
                 <h1>Explore</h1>
                 <img class="searchResults__search" src="./assets/search.svg" alt="">
             </div>
             <h2 class="searchResults__subtitle">Science Fiction</h2>
         </section>
 
-
         <section class="section-trending">
-            <h2 class="section-trending__title">Trending</h2>
-
-            <article class="section-trending__filmList">
+            <div class="section-trending__div">
+                <h2 class="section-trending__title">Trending</h2>
+                <button class="section-trending__btn">See More</button>
+            </div>
+            <article id="trendingFilmList" class="section-trending__filmList">
                 <!-- <div class="film">
                     <img src="./assets/cover-film.png" class="film-img" alt="Nombre de la película"/>
                     <h3 class="film-title">Interstellar</h3>
@@ -50,7 +56,7 @@
                     <p class="film-rate">⭐</p>
                 </div> -->
             </article>
-            <button class="section-trending__btn">See More</button>
+            
         </section>
 
         <section class="section-trailer">
@@ -107,7 +113,7 @@
         </section>
         
         <section class="filmDetail inactive">
-                <article class="filmDetail__img"></article>
+                <article class="filmDetail__img"><img class="searchResults__back arrow-back" src="./assets/chevron-left-solid.svg" alt=""></article>
                 <article class="filmDetail__container">
                     <h2 class="filmDetail__title">Deadpool</h2>
                     <span class="filmDetail__score">⭐7.6</span>
@@ -148,11 +154,7 @@
         </section>
 
         <section class="categories inactive">
-            <form class="searchForm searchForm--explore">
-                <input class="searchForm__input searchForm__input--explore " type="text" placeholder="Search">
-                <button type="button" class="searchForm__btn searchForm__btn--explore">
-                    <img class="searchForm__logo logo" src="./assets/search.svg" alt="search"></button>
-            </form>
+            
             <h1 class="categories__title">Explore</h1>
             <div class="categories__btn">
                 <button>Movies</button>
@@ -167,18 +169,6 @@
                 <!-- <div class="categoryCard">
                     <img class="categoryCard__img" src="./assets/cover-film.png" alt="genre image">
                     <h2 class="categoryCard__title">Fantasy</h2>
-                </div>
-                <div class="categoryCard">
-                    <img class="categoryCard__img" src="./assets/cover-film.png" alt="genre image">
-                    <h2 class="categoryCard__title">Science Fiction</h2>
-                </div>
-                <div class="categoryCard">
-                    <img class="categoryCard__img" src="./assets/cover-film.png" alt="genre image">
-                    <h2 class="categoryCard__title">Fantasy</h2>
-                </div>
-                <div class="categoryCard">
-                    <img class="categoryCard__img" src="./assets/cover-film.png" alt="genre image">
-                    <h2 class="categoryCard__title">Fantasy</h2>
                 </div> -->
             </article>
         </section>
@@ -189,5 +179,6 @@
 
     <script src="./node_modules/axios/dist/axios.min.js"></script>
     <script type="module" src="./src/main.js"></script>
+    <script type="module" src="./src/navigation.js"></script>
 </body>
 </html>

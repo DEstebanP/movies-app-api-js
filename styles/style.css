@@ -93,6 +93,11 @@ h1, h2, h3, p {
     width: 90%;
     margin: 0 auto 60px;
 }
+.section-trending__div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 .section-trending__title, .popular__title {
     font-size: 32px;
     margin: 10px 0 20px;
@@ -206,10 +211,26 @@ h1, h2, h3, p {
     overscroll-behavior-x: contain;
     scroll-snap-type: x mandatory;
 }
+.section-trending__filmList .film {
+    min-width: 170px;
+}
 .section-trending__filmList, .relatedFilms {
     height: 280px;
     padding: 0;
 }
+.section-trending__filmList--categories {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    width: 100%;
+    height: auto;
+    overflow-x: unset;
+    gap: 10px;
+}
+.section-trending__filmList--categories .film {
+    min-width: 130px;
+    padding: 0;
+}
+
 .popular__filmList::-webkit-scrollbar, .relatedFilms::-webkit-scrollbar, .section-trending__filmList::-webkit-scrollbar {
     background-color: var(--base-color-lighter);
     height: 3px;
@@ -310,11 +331,14 @@ h1, h2, h3, p {
     top: 70px;
     width: 100%;
     height: 480px;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.35) 19.27%, rgba(0, 0, 0, 0) 29.17%), url('https://pics.filmaffinity.com/Deadpool-777527803-large.jpg');
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.5) 19.27%, rgba(0, 0, 0, 0) 29.17%), url('https://pics.filmaffinity.com/Deadpool-777527803-large.jpg');
     background-size: cover;
     background-position: top;
     background-repeat: no-repeat;
     z-index: -1;
+}
+.filmDetail__img .arrow-back {
+    margin: 26px 0 0 16px;
 }
 .filmDetail__container {
     position: absolute;
@@ -368,20 +392,19 @@ h1, h2, h3, p {
     height: auto;
     padding: 0;
 }
-.relatedFilms--film, .section-trending__filmList .film {
+.relatedFilms--film {
     min-width: 170px;
 }
 
 /* Explore */
 .categories {
     width: 100%;
-    margin-top: 80px;
 }
 .searchForm--explore {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 24px;
+    margin-bottom: 12px;
 }
 .searchForm__input--explore {
     border-radius: 4px 0 0 4px;
@@ -444,7 +467,7 @@ h1, h2, h3, p {
 
 .searchResults {
     width: 90%;
-    padding: 0 10px;
+    padding: 0 10px 0 0;
     margin: 80px auto 0;
     margin-bottom: 20px;
 }
@@ -452,7 +475,7 @@ h1, h2, h3, p {
     width: 18px;
     margin-bottom: 12px;
 }
-.searchResults >div {
+.searchResults__title {
     display: flex;
     margin-bottom: 8px;
     justify-content: space-between;
