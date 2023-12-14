@@ -7,6 +7,7 @@ const api = axios.create({
     }
 });
 
+// Utils
 const moviesId = [];
 function getMoviePhotoGenre(dataMovieResults) {
     for (let i = 0; i < dataMovieResults.length; i++) {
@@ -31,13 +32,13 @@ function appendMovies(container, movies) {
 
         const movieImg = document.createElement('img');
         movieImg.classList.add('film-img');
-        movieImg.src = 'https://image.tmdb.org/t/p/w300' + movie.poster_path;
+        movieImg.src = movie.poster_path ? 'https://image.tmdb.org/t/p/w300' + movie.poster_path : '../assets/missing-photo.png';
         movieImg.setAttribute('alt', movie.title);
 
         const movieTitle = document.createElement('h3');
         movieTitle.innerText = movie.title;
         movieTitle.classList.add('film-title');
-        movieTitle.classList.add('inactive');
+        movie.poster_path ? movieTitle.classList.add('inactive') : movieTitle.classList.remove('inactive') ;
 
         const movieYear = document.createElement('p');
         movieYear.classList.add('film-year');
@@ -53,6 +54,7 @@ function appendMovies(container, movies) {
     });
 }
 
+// Consuming API
 async function getMoviesGenres() {
     try {
         //get genres
@@ -104,5 +106,20 @@ async function getMoviesByCategory(genreId) {
         console.error(err);
     }
 }
+async function getMoviesBySearch(query) {
+    try {
+        const { data } = await api.get(`/search/movie`, {
+            params: {
+                query: query,
+                page: '1'
+            }
+        });
+        const movies = data.results;
+        console.log(movies);
+        appendMovies(trendingMoviesArticle, movies);
+    } catch (err) {
+        console.error(err);
+    }
+}
 
-export {getTrendingPreview, getMoviesGenres, getMoviesByCategory}
+export {getTrendingPreview, getMoviesGenres, getMoviesByCategory, getMoviesBySearch} 

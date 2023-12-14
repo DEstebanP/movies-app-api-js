@@ -26,4 +26,6 @@ export const trendingBtn = document.querySelector('.section-trending__btn');
 export const exploreTitle = document.querySelector('.searchResults__title');
 export const exploreSubtitle = document.querySelector('.searchResults__subtitle');
 export const searchBtn = document.querySelector('#searchBtn');
+export const searchInputExplore = document.querySelector('#searchInputExplore');
+
 

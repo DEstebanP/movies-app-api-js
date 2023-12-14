@@ -1,20 +1,30 @@
-import { getTrendingPreview, getMoviesGenres, getMoviesByCategory } from "./main.js";
+import { getTrendingPreview, getMoviesGenres, getMoviesByCategory, getMoviesBySearch } from "./main.js";
 import * as Node from "./nodes.js";
 
 window.addEventListener('DOMContentLoaded', navigator, false);
 window.addEventListener('hashchange', navigator, false);
 Node.headerLogo.addEventListener('click', () => location.hash = "#home");
+//change
 Node.arrowBack.forEach(arrow => {
-    arrow.addEventListener('click', (event) => {
-        if (event.target.closest('.filmDetail__img')) {
-            location.hash = "#home";
+    arrow.addEventListener('click', () => {
+        // Get the URL of the previous page
+        const previousUrl = document.referrer;
+
+    // Check if the previous URL belongs to the same application
+        if (previousUrl.includes(location.hostname)) {
+        // If it does, go back to the previous URL
+            history.back();
         } else {
-            location.hash ="#explore"
-        }
+        // If it doesn't belong to the same application, redirect to the application's home
+            window.location.href = '#home'; // Replace '/' with the URL of your home page
+    }
+        Node.searchInputExplore.value = '';
     });
 })
 Node.trendingBtn.addEventListener('click', () => location.hash = "#trends")
-Node.searchBtn.addEventListener('click', () => location.hash ="#search=");
+Node.searchBtn.addEventListener('click', () => {
+    location.hash ="#search=" + Node.searchInputExplore.value;
+});
 
 function adjustActionAccordingToScreen() {
     const screenWidth = window.innerWidth;
@@ -26,7 +36,19 @@ function adjustActionAccordingToScreen() {
 window.addEventListener('load', adjustActionAccordingToScreen);
 window.addEventListener('resize', adjustActionAccordingToScreen);
 
+function smoothScroll(){
+    const currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
+    if (currentScroll > 0) {
+         window.requestAnimationFrame(smoothScroll);
+         window.scrollTo (0,currentScroll - (currentScroll/5));
+    }
+};
 function navigator() {
+    /* window.scrollTo({
+        top: 0,
+        behavior: 'auto'
+      }); */
+    smoothScroll();
     if (location.hash.startsWith('#trends')) {
         trendsPage();
     } else if (location.hash.startsWith('#explore')) {
@@ -61,13 +83,7 @@ function homePage() {
     Node.sectionFilmDetail.classList.add('inactive');
     Node.exploreBtn.classList.remove('inactive');
     Node.header.style.backgroundColor = 'transparent';
-    
-    window.scrollTo({
-        top: 0,
-        behavior: 'auto'
-      });
     getTrendingPreview();
-
 }
 
 function categoryPage() {
@@ -96,11 +112,6 @@ function categoryPage() {
     const genreId = hashStr.slice(hashStr.indexOf('=')+1, hashStr.indexOf('-'));
     const genreName = hashStr.slice(hashStr.indexOf('-')+1);
     Node.exploreSubtitle.innerText = genreName;
-
-    window.scrollTo({
-        top: 0,
-        behavior: 'auto'
-      });
     getMoviesByCategory(genreId);
 }
 
@@ -125,11 +136,14 @@ function searchPage() {
     Node.trendingFilmList.classList.add('section-trending__filmList--categories');
     Node.trendingTitle.classList.add('inactive');
     Node.header.style.backgroundColor = '#090911';
-    window.scrollTo({
-        top: 0,
-        behavior: 'auto'
-      });
+
+    const [_, search] = location.hash.split('=');
+    const query = decodeURI(search).replace(new RegExp(" ", "g"), "+");
+    console.log(query);
+    Node.exploreSubtitle.innerText = `Results for ${decodeURI(search)}`;
+    getMoviesBySearch(query);
 }
+
 function movieDetailsPage() {
     console.log('Movie!!');
     Node.sectionImg.classList.add('inactive');
@@ -143,12 +157,7 @@ function movieDetailsPage() {
 
     Node.sectionFilmDetail.classList.remove('inactive');
     /* Node.movieDetailImg.style.backgroundImage = `linear-gradient(180deg, rgba(0, 0, 0, 0.35) 19.27%, rgba(0, 0, 0, 0) 29.17%), url('${nuevaURL}')`; */
-    window.scrollTo({
-        top: 0,
-        behavior: 'auto'
-      });
 }
-
 
 function explorePage() {
     Node.exploreBtn.classList.add('inactive');
@@ -166,10 +175,6 @@ function explorePage() {
     
     Node.sectionCategories.classList.remove('inactive');
     Node.header.style.backgroundColor = '#090911';
-    window.scrollTo({
-        top: 0,
-        behavior: 'auto'
-      });
     const isGenreNodes = Array.from(Node.categoriesCards.children);
     if (!isGenreNodes.length) {
         console.log('me ejecuto');
@@ -198,9 +203,5 @@ function trendsPage() {
     Node.trendingTitle.classList.remove('inactive');
     Node.trendingBtn.classList.add('inactive');
     Node.header.style.backgroundColor = '#090911';
-    window.scrollTo({
-        top: 0,
-        behavior: 'auto'
-      });
     getTrendingPreview()
 }
