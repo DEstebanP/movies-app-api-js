@@ -14,6 +14,8 @@ export const categoriesCards = document.querySelector('.categories__cards');
 export const trendingMoviesArticle = document.querySelector('.section-trending__filmList');
 export const trendingFilmList = document.getElementById('trendingFilmList');
 export const searchFormExplore = document.querySelector('.searchResults .searchForm');
+export const filmDetailContainer = document.querySelector('.filmDetail__container >div');
+export const relatedFilms = document.querySelector('#relatedFilms');
 
 
 //Elements
@@ -27,5 +29,7 @@ export const exploreTitle = document.querySelector('.searchResults__title');
 export const exploreSubtitle = document.querySelector('.searchResults__subtitle');
 export const searchBtn = document.querySelector('#searchBtn');
 export const searchInputExplore = document.querySelector('#searchInputExplore');
+export const trendsBtn = document.querySelector('#trendsBtn');
+export const filmDetailImg = document.querySelector('.filmDetail__img');
 
 

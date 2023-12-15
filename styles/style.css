@@ -353,10 +353,12 @@ h1, h2, h3, p {
     display: inline-block;
     width: fit-content;
     font-size: 2.8rem;
-    margin: 0 35% 4px 0;
+    margin: 0 0 4px 0;
 }
 .filmDetail__score {
     font-weight: 700;
+    margin-top: 12px;
+    float: right;
 }
 .filmDetail__info {
     font-size: 1.2rem;
@@ -365,10 +367,11 @@ h1, h2, h3, p {
 }
 .filmDetail__info span {
     margin-right: 30px;
+    text-transform: uppercase;
 }
 .filmDetail__info :nth-child(3) {
     display: block;
-    margin-top: 4px;
+    margin-top: 6px;
 }
 .filmDetail__trailer {
     display: flex;

@@ -46,7 +46,7 @@
         <section class="section-trending">
             <div class="section-trending__div">
                 <h2 class="section-trending__title">Trending</h2>
-                <button class="section-trending__btn">See More</button>
+                <button id="trendsBtn" class="section-trending__btn">See More</button>
             </div>
             <article id="trendingFilmList" class="section-trending__filmList">
                 <!-- <div class="film">
@@ -115,16 +115,25 @@
         <section class="filmDetail inactive">
                 <article class="filmDetail__img"><img class="searchResults__back arrow-back" src="./assets/chevron-left-solid.svg" alt=""></article>
                 <article class="filmDetail__container">
-                    <h2 class="filmDetail__title">Deadpool</h2>
-                    <span class="filmDetail__score">⭐7.6</span>
-                    <p class="filmDetail__info"><span>2HR 23 MIN</span> <span>2020</span> <!-- <span>Superheroes, Action and adventure</span> --></p>
-                    <button class="filmDetail__trailer"><img src="./assets/play-solid.svg" alt="play"><span>Play Trailer</span></button>
-                    <p class="filmDetail__description">
-                    Wisecracking mercenary Deadpool battles the evil and powerful Cable and other bad guys to save a boy's life. 
-                    </p>
+                    <div>
+                        <!-- <h2 class="filmDetail__title">Deadpool</h2>
+                        <span class="filmDetail__score">⭐7.6</span>
+                        <p class="filmDetail__info">
+                            <span>2HR 23 MIN</span> 
+                            <span>20 Jun, 2020</span> 
+                            <span>Superheroes - Action - adventure</span>
+                        </p>
+                        <button class="filmDetail__trailer">
+                            <img src="./assets/play-solid.svg" alt="play">
+                            <span>Play Trailer</span>
+                        </button>
+                        <p class="filmDetail__description">
+                        Wisecracking mercenary Deadpool battles the evil and powerful Cable and other bad guys to save a boy's life. 
+                        </p> -->
+                    </div>
 
                     <h3 class="filmDetail__title2">Similar Movies</h3>
-                    <article class="relatedFilms">
+                    <article id="relatedFilms" class="relatedFilms">
                         <div class="film relatedFilms--film">
                             <img src="./assets/cover-film.png" class="film-img" alt="Nombre de la película"/>
                             <h3 class="film-title">Interstellar</h3>

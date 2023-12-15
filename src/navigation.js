@@ -1,4 +1,4 @@
-import { getTrendingPreview, getMoviesGenres, getMoviesByCategory, getMoviesBySearch } from "./main.js";
+import { getTrendingPreview, getMoviesGenres, getMoviesByCategory, getMoviesBySearch, getTrends, getMovieById } from "./main.js";
 import * as Node from "./nodes.js";
 
 window.addEventListener('DOMContentLoaded', navigator, false);
@@ -25,6 +25,7 @@ Node.trendingBtn.addEventListener('click', () => location.hash = "#trends")
 Node.searchBtn.addEventListener('click', () => {
     location.hash ="#search=" + Node.searchInputExplore.value;
 });
+Node.trendsBtn.addEventListener('click', () => location.hash = '#trends');
 
 function adjustActionAccordingToScreen() {
     const screenWidth = window.innerWidth;
@@ -83,6 +84,7 @@ function homePage() {
     Node.sectionFilmDetail.classList.add('inactive');
     Node.exploreBtn.classList.remove('inactive');
     Node.header.style.backgroundColor = 'transparent';
+    Node.movieDetailImg.style.backgroundImage = '';
     getTrendingPreview();
 }
 
@@ -107,6 +109,7 @@ function categoryPage() {
     Node.trendingFilmList.classList.add('section-trending__filmList--categories');
     Node.trendingTitle.classList.add('inactive');
     Node.header.style.backgroundColor = '#090911';
+    Node.movieDetailImg.style.backgroundImage = '';
     
     const hashStr = decodeURI(location.hash);
     const genreId = hashStr.slice(hashStr.indexOf('=')+1, hashStr.indexOf('-'));
@@ -136,6 +139,7 @@ function searchPage() {
     Node.trendingFilmList.classList.add('section-trending__filmList--categories');
     Node.trendingTitle.classList.add('inactive');
     Node.header.style.backgroundColor = '#090911';
+    Node.movieDetailImg.style.backgroundImage = '';
 
     const [_, search] = location.hash.split('=');
     const query = decodeURI(search).replace(new RegExp(" ", "g"), "+");
@@ -156,7 +160,12 @@ function movieDetailsPage() {
     Node.searchResultsHeader.classList.add('inactive');
 
     Node.sectionFilmDetail.classList.remove('inactive');
-    /* Node.movieDetailImg.style.backgroundImage = `linear-gradient(180deg, rgba(0, 0, 0, 0.35) 19.27%, rgba(0, 0, 0, 0) 29.17%), url('${nuevaURL}')`; */
+    Node.header.style.backgroundColor = '#090911';
+
+    const [_, movieData] = location.hash.split('=');
+    const [id, movieName] = movieData.split('-');
+    console.log(id);
+    getMovieById(id);
 }
 
 function explorePage() {
@@ -175,6 +184,7 @@ function explorePage() {
     
     Node.sectionCategories.classList.remove('inactive');
     Node.header.style.backgroundColor = '#090911';
+    Node.movieDetailImg.style.backgroundImage = '';
     const isGenreNodes = Array.from(Node.categoriesCards.children);
     if (!isGenreNodes.length) {
         console.log('me ejecuto');
@@ -203,5 +213,6 @@ function trendsPage() {
     Node.trendingTitle.classList.remove('inactive');
     Node.trendingBtn.classList.add('inactive');
     Node.header.style.backgroundColor = '#090911';
-    getTrendingPreview()
+    Node.movieDetailImg.style.backgroundImage = '';
+    getTrends();
 }
