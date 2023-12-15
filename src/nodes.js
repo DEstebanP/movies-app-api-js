@@ -21,7 +21,6 @@ export const relatedFilms = document.querySelector('#relatedFilms');
 //Elements
 export const exploreBtn = document.getElementById('search-btn');
 export const headerLogo = document.querySelector('.header__appLogo');
-export const movieDetailImg = document.querySelector('.filmDetail__img');
 export const arrowBack = document.querySelectorAll('.arrow-back');
 export const trendingTitle = document.querySelector('.section-trending__title');
 export const trendingBtn = document.querySelector('.section-trending__btn');
@@ -30,6 +29,14 @@ export const exploreSubtitle = document.querySelector('.searchResults__subtitle'
 export const searchBtn = document.querySelector('#searchBtn');
 export const searchInputExplore = document.querySelector('#searchInputExplore');
 export const trendsBtn = document.querySelector('#trendsBtn');
-export const filmDetailImg = document.querySelector('.filmDetail__img');
+
+export const movieDetailImg = document.querySelector('.filmDetail__img');
+export const filmDetailTitle = document.querySelector('.filmDetail__title');
+export const filmDetailScore = document.querySelector('.filmDetail__score');
+export const filmDetailDuration = document.querySelector('.filmDetail__info :nth-child(1)');
+export const filmDetailRelease = document.querySelector('.filmDetail__info :nth-child(2)');
+export const filmDetailCategories = document.querySelector('.filmDetail__info :nth-child(3)');
+export const filmDetailDescription = document.querySelector('.filmDetail__description');
+
 
 

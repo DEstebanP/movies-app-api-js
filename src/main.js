@@ -1,5 +1,6 @@
 import { API_KEY, API_KEY_TOKEN } from "./secrets.mjs";
-import { categoriesCards, filmDetailContainer, trendingMoviesArticle, movieDetailImg, relatedFilms } from "./nodes.js";
+import { categoriesCards, filmDetailContainer, trendingMoviesArticle, movieDetailImg, relatedFilms, 
+    filmDetailTitle, filmDetailScore, filmDetailDuration, filmDetailRelease, filmDetailCategories, filmDetailDescription } from "./nodes.js";
 const api = axios.create({
     baseURL: 'https://api.themoviedb.org/3',
     headers: {
@@ -27,6 +28,7 @@ function appendMovies(container, movies, related = false) {
     while (container.firstChild) {
         container.removeChild(container.firstChild);
     }
+    container.scrollLeft = 0;
     movies.forEach(movie => {
         const movieContainer = document.createElement('div');
         movieContainer.classList.add('film');
@@ -95,7 +97,6 @@ async function getMoviesGenres() {
 }
 async function getTrendingPreview() {
     const {data} = await api.get('/trending/movie/day');
-    console.log(data);
 
     const movies = data.results;
     appendMovies(trendingMoviesArticle, movies);
@@ -134,51 +135,24 @@ async function getTrends() {
 async function getMovieById(id) {
     try {
         const { data: movie } = await api.get(`/movie/${id}`);
-        console.log(movie);
         
-        while (filmDetailContainer.firstChild) {
-            filmDetailContainer.removeChild(filmDetailContainer.firstChild);
-        }
+        
         movieDetailImg.style.backgroundImage = `linear-gradient(180deg, rgba(0, 0, 0, 0.35) 19.27%, rgba(0, 0, 0, 0) 29.17%), url('https://image.tmdb.org/t/p/w500${movie.poster_path}')`;
-        const filmDetailTitle = document.createElement('h2');
-        filmDetailTitle.classList.add('filmDetail__title');
         filmDetailTitle.innerText = movie.original_title;
         
-        const filmDetailScore = document.createElement('span');
-        filmDetailScore.classList.add('filmDetail__score');
         filmDetailScore.innerText = '⭐'+movie.vote_average.toFixed(1);
-
-        const filmDetailInfo = document.createElement('p');
-        filmDetailInfo.classList.add('filmDetail__info');
         
-        const filmDetailDuration = document.createElement('span');
         filmDetailDuration.innerText = movie.runtime; //! PENDIENTE
-        const filmDetailRelease = document.createElement('span');
         filmDetailRelease.innerText = movie.release_date; //! PENDIENTE
-        const filmDetailCategories = document.createElement('span');
-        filmDetailCategories.innerText = movie.genres.map(genre => genre.name).join(' - '); 
-        filmDetailInfo.append(filmDetailDuration, filmDetailRelease, filmDetailCategories);
+        filmDetailCategories.innerText = movie.genres.map(genre => genre.name).join(' - '); //!PENDIENTE - add click event to each genre
 
-        const filmDetailBtn = document.createElement('button');
-        filmDetailBtn.classList.add('filmDetail__trailer');
-
-        const filmBtnPlay = document.createElement('img');
-        filmBtnPlay.src = '../assets/play-solid.svg';
-        filmBtnPlay.setAttribute('alt', 'play')
-        const filmBtnText = document.createElement('span');
-        filmBtnText.innerText = 'Play Trailer';
-        filmDetailBtn.append(filmBtnPlay, filmBtnText);
-
-        const filmDetailDescription = document.createElement('p');
-        filmDetailDescription.classList.add('filmDetail__description');
         filmDetailDescription.innerText = movie.overview;
 
-        filmDetailContainer.append(filmDetailTitle, filmDetailScore, filmDetailInfo, filmDetailBtn, filmDetailDescription);
 
         //Related movies
         const { data } = await api.get(`/movie/${id}/similar`);
-        const relatedmovies = data.results;
-        appendMovies(relatedFilms, relatedmovies, true);
+        const relatedMovies = data.results;
+        appendMovies(relatedFilms, relatedMovies, true);
     } catch (err) {
         console.error(err);
     }
