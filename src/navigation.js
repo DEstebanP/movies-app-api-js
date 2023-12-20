@@ -1,4 +1,4 @@
-import { getTrendingPreview, getMoviesGenres, getMoviesByCategory, getMoviesBySearch, getTrends, getMovieById } from "./main.js";
+import { getTrendingPreview, getMoviesGenres, getMoviesByCategory, getMoviesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview } from "./main.js";
 import * as Node from "./nodes.js";
 
 window.addEventListener('DOMContentLoaded', navigator, false);
@@ -85,7 +85,9 @@ function homePage() {
     Node.exploreBtn.classList.remove('inactive');
     Node.header.style.backgroundColor = 'transparent';
     Node.movieDetailImg.style.backgroundImage = '';
+    getMovieHome();
     getTrendingPreview();
+    getPopularPreview();
 }
 
 function categoryPage() {

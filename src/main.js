@@ -1,6 +1,5 @@
 import { API_KEY, API_KEY_TOKEN } from "./secrets.mjs";
-import { categoriesCards, filmDetailContainer, trendingMoviesArticle, movieDetailImg, relatedFilms, 
-    filmDetailTitle, filmDetailScore, filmDetailDuration, filmDetailRelease, filmDetailCategories, filmDetailDescription } from "./nodes.js";
+import { categoriesCards, filmDetailContainer, trendingMoviesArticle, movieDetailImg, relatedFilms, filmDetailTitle, filmDetailScore, filmDetailDuration, filmDetailRelease, filmDetailCategories, filmDetailDescription, homeImg, homeImgTitle, popularFilmList, homeExploreImg} from "./nodes.js";
 const api = axios.create({
     baseURL: 'https://api.themoviedb.org/3',
     headers: {
@@ -24,7 +23,7 @@ function getMoviePhotoGenre(dataMovieResults) {
     }
     
 }
-function appendMovies(container, movies, related = false) {
+function appendMovies(container, movies, related = false, popular = false) {
     while (container.firstChild) {
         container.removeChild(container.firstChild);
     }
@@ -53,13 +52,61 @@ function appendMovies(container, movies, related = false) {
         movieRate.classList.add('film-rate');
         movieRate.innerText = `${movie.vote_average.toFixed(1)} ⭐`
 
-        movieContainer.append(movieImg, movieTitle, movieYear, movieRate);
+        if (popular) {
+            const movieContentContainer = document.createElement('div');
+            movieContentContainer.classList.add('film__container--secondary');
+
+            movieContainer.classList.add('film--secondary')
+            movieTitle.classList.add('film-title--secondary');
+            movieTitle.classList.remove('inactive')
+            movieYear.classList.add('film-year--secondary');
+            movieRate.classList.add('film-rate--secondary');
+
+            const movieDescription = document.createElement('p');
+            movieDescription.classList.add('film-description');
+            movieDescription.innerText = movie.overview;
+            movieContentContainer.append(movieTitle,movieDescription ,movieYear, movieRate);
+            movieContainer.append(movieImg, movieContentContainer);
+        } else {
+            movieContainer.append(movieImg, movieTitle, movieYear, movieRate);
+        }
+
         movieContainer.addEventListener('click', () => location.hash = `#movie=${movie.id}-${movie.title}`)
         container.appendChild(movieContainer);
     });
 }
 
 // Consuming API
+// Home
+async function getMovieHome() {
+    const {data} = await api.get('/trending/movie/week');
+
+    const movies = data.results;
+    console.log(movies);
+    const randomNum = Math.floor(Math.random()*movies.length);
+    homeImg.src = 'https://image.tmdb.org/t/p/w780' + movies[randomNum].backdrop_path;
+    homeImgTitle.innerText = movies[randomNum].title;
+
+    //Image of the explore section
+    const randomNum2 = Math.floor(Math.random()*movies.length);
+    homeExploreImg.src = 'https://image.tmdb.org/t/p/w780' + movies[randomNum2].backdrop_path;
+    console.log(movies[randomNum2].poster_path);
+}
+async function getTrendingPreview() {
+    const {data} = await api.get('/trending/movie/day');
+
+    const movies = data.results;
+    appendMovies(trendingMoviesArticle, movies);
+}
+async function getPopularPreview() {
+    const {data} = await api.get('/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc');
+
+    const movies = data.results;
+    movies.splice(3);
+    popularFilmList.scrollLeft = 0;
+    appendMovies(popularFilmList, movies, false, true);
+}
+
 async function getMoviesGenres() {
     try {
         //get genres
@@ -94,12 +141,6 @@ async function getMoviesGenres() {
     } catch (err) {
         console.error(err);
     }
-}
-async function getTrendingPreview() {
-    const {data} = await api.get('/trending/movie/day');
-
-    const movies = data.results;
-    appendMovies(trendingMoviesArticle, movies);
 }
 async function getMoviesByCategory(genreId) {
     try {
@@ -158,4 +199,4 @@ async function getMovieById(id) {
     }
 }
 
-export {getTrendingPreview, getMoviesGenres, getMoviesByCategory, getMoviesBySearch, getTrends, getMovieById} 
+export {getTrendingPreview, getMoviesGenres, getMoviesByCategory, getMoviesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview} 

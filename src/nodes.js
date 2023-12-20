@@ -16,6 +16,7 @@ export const trendingFilmList = document.getElementById('trendingFilmList');
 export const searchFormExplore = document.querySelector('.searchResults .searchForm');
 export const filmDetailContainer = document.querySelector('.filmDetail__container >div');
 export const relatedFilms = document.querySelector('#relatedFilms');
+export const popularFilmList = document.querySelector('.popular__filmList');
 
 
 //Elements
@@ -37,6 +38,9 @@ export const filmDetailDuration = document.querySelector('.filmDetail__info :nth
 export const filmDetailRelease = document.querySelector('.filmDetail__info :nth-child(2)');
 export const filmDetailCategories = document.querySelector('.filmDetail__info :nth-child(3)');
 export const filmDetailDescription = document.querySelector('.filmDetail__description');
+export const homeImg = document.querySelector('.section-image__img');
+export const homeImgTitle = document.querySelector('.section-image__film-title');
+export const homeExploreImg = document.querySelector('.explore__img');
 
 
 

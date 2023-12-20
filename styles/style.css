@@ -75,16 +75,17 @@ h1, h2, h3, p {
 .section-image__film-title {
     position: absolute;
     color: var(--text-color);
-    font-size: 6rem;
+    font-size: 4.6rem;
     margin: 0;
     left: 20px;
-    bottom: 24px;
+    bottom: 20px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 .section-image__img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: 50% 30%; 
 }
 
 /* Trending */
@@ -251,15 +252,17 @@ h1, h2, h3, p {
     padding: 0;
     overflow: hidden;
 }
-.film-title--secondary, .film-year--secondary, .film-rate--secondary, .film-description {
+.film__container--secondary {
     position: absolute;
-} 
+    bottom: 5%;
+    padding: 0 10px;
+}
+
 .film-title--secondary {
-    top: 40%;
-    left: 10px;
     font-size: 32px;
 }
 .film-img--secondary {
+    position: absolute;
     height: 100%;
     object-fit: cover;
 }
@@ -276,19 +279,16 @@ h1, h2, h3, p {
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.6) 50%, rgba(0, 0, 0, 1.0));
 }
 .film-description {
-    top: 55%;
-    padding: 0 10px;
     font-size: 1.4rem;
+    margin: 10px 0 ;
 }
 .film-year--secondary {
-    bottom: 20px;
-    left: 10px;
+    display: inline-block;
     font-size: 1.8rem;
 }
 .film-rate--secondary {
-    bottom: 20px;
-    right: 16px;
     font-size: 1.8rem;
+    float: right;
 }
 
 
