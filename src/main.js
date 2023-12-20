@@ -1,5 +1,5 @@
 import { API_KEY, API_KEY_TOKEN } from "./secrets.mjs";
-import { categoriesCards, filmDetailContainer, trendingMoviesArticle, movieDetailImg, relatedFilms, filmDetailTitle, filmDetailScore, filmDetailDuration, filmDetailRelease, filmDetailCategories, filmDetailDescription, homeImg, homeImgTitle, popularFilmList, homeExploreImg} from "./nodes.js";
+import { categoriesCards, filmDetailContainer, trendingMoviesArticle, movieDetailImg, relatedFilms, filmDetailTitle, filmDetailScore, filmDetailDuration, filmDetailRelease, filmDetailCategories, filmDetailDescription, homeImg, homeImgTitle, popularFilmList, homeExploreImg, moviesGenresBtn} from "./nodes.js";
 const api = axios.create({
     baseURL: 'https://api.themoviedb.org/3',
     headers: {
@@ -10,16 +10,45 @@ const api = axios.create({
 
 // Utils
 const moviesId = [];
-function getMoviePhotoGenre(dataMovieResults) {
-    for (let i = 0; i < dataMovieResults.length; i++) {
-        const apiMovie = dataMovieResults[i];
-        const isRepeated = moviesId.some(movie => {
-            return apiMovie.id == movie.id;
-        });
-        if (!isRepeated) {
-            moviesId.push(apiMovie);
-            return apiMovie.poster_path;
+async function getGenres(genres, apiUrl) {
+    console.log(genres);
+    while (categoriesCards.firstChild) {
+        categoriesCards.removeChild(categoriesCards.firstChild);
+    }
+    for (const genre of genres) {
+        const {data} = await api.get(`${apiUrl}${genre.id}`);
+        let categoryImg;
+        for (let i = 0; i < data.results.length; i++) {
+            const apiMovie = data.results[i];
+            const isRepeated = moviesId.some(movie => {
+                return apiMovie.id == movie.id;
+            });
+            if (!isRepeated) {
+                moviesId.push(apiMovie);
+                categoryImg = apiMovie.poster_path;
+            }
         }
+        console.log(data.results);
+        console.log(categoryImg);
+        const categoryCard = document.createElement('div');
+        categoryCard.classList.add('categoryCard');
+        
+        const cardImg = document.createElement('img');
+        cardImg.classList.add('categoryCard__img');
+        cardImg.src = 'https://image.tmdb.org/t/p/w300' + categoryImg;
+        if (!categoryImg) cardImg.src = "../assets/missing-photo.png";
+        cardImg.setAttribute('alt', genre.name);
+        
+        const cardTitle = document.createElement('h2');
+        cardTitle.classList.add('categoryCard__title');
+        cardTitle.innerText = genre.name;
+
+        categoryCard.append(cardImg, cardTitle);
+        
+        categoryCard.addEventListener('click', () => {
+            location.hash = `#category=${genre.id}-${genre.name}`;
+        })
+        categoriesCards.appendChild(categoryCard);
     }
     
 }
@@ -112,40 +141,35 @@ async function getMoviesGenres() {
         //get genres
     const { data }= await api.get('/genre/movie/list')
     const genres = data.genres;
-    console.log(genres);
     //get a movie photo from a genre
-    for (const genre of genres) {
-        const {data} = await api.get(`/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&with_genres=${genre.id}`);
-        const categoryImg = getMoviePhotoGenre(data.results);
-
-        const categoryCard = document.createElement('div');
-        categoryCard.classList.add('categoryCard');
-        
-        const cardImg = document.createElement('img');
-        cardImg.classList.add('categoryCard__img');
-        cardImg.src = 'https://image.tmdb.org/t/p/w300' + categoryImg;
-        cardImg.setAttribute('alt', genre.name);
-        
-        const cardTitle = document.createElement('h2');
-        cardTitle.classList.add('categoryCard__title');
-        cardTitle.innerText = genre.name;
-
-        categoryCard.append(cardImg, cardTitle);
-        
-        categoryCard.addEventListener('click', () => {
-            location.hash = `#category=${genre.id}-${genre.name}`;
-        })
-        categoriesCards.appendChild(categoryCard);
-    }
-    
+    getGenres(genres, '/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&with_genres=')
     } catch (err) {
-        console.error(err);
+        console.error(err)
     }
-}
+}    
+async function getSeriesGenres() {
+    try {
+        //get genres
+    const { data }= await api.get('/genre/tv/list')
+    const genres = data.genres;
+    //get a movie photo from a genre
+    getGenres(genres, '/discover/tv?include_adult=false&include_null_first_air_dates=false&language=en-US&page=1&sort_by=popularity.desc&with_genres=')
+    } catch (err) {
+        console.error(err)
+    }
+}  
 async function getMoviesByCategory(genreId) {
     try {
-        const { data } = await api.get(`/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&with_genres=${genreId}`);
-        const movies = data.results;
+        const isMoviesActive = moviesGenresBtn.classList.contains('active');
+        let movies;
+        if (isMoviesActive) {
+            const { data } = await api.get(`/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&with_genres=${genreId}`);
+            movies = data.results;
+        } else {
+            const { data } = await api.get(`/discover/tv?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&with_genres=${genreId}`);
+            movies = data.results;
+        }
+
         appendMovies(trendingMoviesArticle, movies);
     } catch (err) {
         console.error(err);
@@ -199,4 +223,4 @@ async function getMovieById(id) {
     }
 }
 
-export {getTrendingPreview, getMoviesGenres, getMoviesByCategory, getMoviesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview} 
+export {getTrendingPreview, getMoviesGenres, getMoviesByCategory, getMoviesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview, getSeriesGenres} 

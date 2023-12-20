@@ -1,6 +1,7 @@
-import { getTrendingPreview, getMoviesGenres, getMoviesByCategory, getMoviesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview } from "./main.js";
+import { getTrendingPreview, getMoviesGenres, getMoviesByCategory, getMoviesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview, getSeriesGenres } from "./main.js";
 import * as Node from "./nodes.js";
 
+// Add event listener
 window.addEventListener('DOMContentLoaded', navigator, false);
 window.addEventListener('hashchange', navigator, false);
 Node.headerLogo.addEventListener('click', () => location.hash = "#home");
@@ -65,7 +66,27 @@ function navigator() {
     homePage();
     }
 }
+// Change between movies and series genres
+Node.moviesGenresBtn.addEventListener('click', () => {
+    Node.moviesGenresBtn.style.backgroundColor = '#F1EEF5';
+    Node.moviesGenresBtn.style.color = '#000000';
+    Node.moviesGenresBtn.classList.add('active');
+    Node.seriesGenresBtn.classList.remove('active');
 
+    Node.seriesGenresBtn.style.backgroundColor = 'transparent';
+    Node.seriesGenresBtn.style.color = '#F1EEF5';
+    getMoviesGenres();
+});
+Node.seriesGenresBtn.addEventListener('click', () => {
+    Node.seriesGenresBtn.style.backgroundColor = '#F1EEF5';
+    Node.seriesGenresBtn.style.color = '#000000';
+    Node.seriesGenresBtn.classList.add('active');
+    Node.moviesGenresBtn.classList.remove('active');
+
+    Node.moviesGenresBtn.style.backgroundColor = 'transparent';
+    Node.moviesGenresBtn.style.color = '#F1EEF5';
+    getSeriesGenres();
+})
 
 function homePage() {
     console.log('Home!!');
@@ -188,10 +209,8 @@ function explorePage() {
     Node.header.style.backgroundColor = '#090911';
     Node.movieDetailImg.style.backgroundImage = '';
     const isGenreNodes = Array.from(Node.categoriesCards.children);
-    if (!isGenreNodes.length) {
-        console.log('me ejecuto');
-        getMoviesGenres();
-    }
+    const isMoviesActive = Node.moviesGenresBtn.classList.contains('active');
+    isMoviesActive ? getMoviesGenres() : getSeriesGenres();
 }
 
 function trendsPage() {

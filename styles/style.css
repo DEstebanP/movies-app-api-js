@@ -436,10 +436,11 @@ h1, h2, h3, p {
     background-color: transparent;
 }
 .categories__btn :first-child {
-    background-color: var(--text-color);
     border-radius: 4px 0 0 4px;
+    background-color: var(--text-color);
 }
 .categories__btn :nth-child(2) {
+    border-radius: 0 4px 4px 0;
     color: var(--text-color);
 }
 .categories span {

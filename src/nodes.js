@@ -41,6 +41,8 @@ export const filmDetailDescription = document.querySelector('.filmDetail__descri
 export const homeImg = document.querySelector('.section-image__img');
 export const homeImgTitle = document.querySelector('.section-image__film-title');
 export const homeExploreImg = document.querySelector('.explore__img');
+export const moviesGenresBtn = document.querySelector('#moviesGenresBtn');
+export const seriesGenresBtn = document.querySelector('#seriesGenresBtn');
 
 
 
