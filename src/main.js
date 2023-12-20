@@ -11,7 +11,7 @@ const api = axios.create({
 // Utils
 const moviesId = [];
 async function getGenres(genres, apiUrl) {
-    console.log(genres);
+    moviesId.splice(0);
     while (categoriesCards.firstChild) {
         categoriesCards.removeChild(categoriesCards.firstChild);
     }
@@ -28,8 +28,6 @@ async function getGenres(genres, apiUrl) {
                 categoryImg = apiMovie.poster_path;
             }
         }
-        console.log(data.results);
-        console.log(categoryImg);
         const categoryCard = document.createElement('div');
         categoryCard.classList.add('categoryCard');
         
