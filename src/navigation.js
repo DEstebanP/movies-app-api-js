@@ -104,7 +104,7 @@ function homePage() {
     Node.sectionCategories.classList.add('inactive');
     Node.sectionFilmDetail.classList.add('inactive');
     Node.exploreBtn.classList.remove('inactive');
-    Node.header.style.backgroundColor = 'transparent';
+    Node.header.style.backgroundColor = 'rgba(30, 29, 27, 0.25)';
     Node.movieDetailImg.style.backgroundImage = '';
     getMovieHome();
     getTrendingPreview();
