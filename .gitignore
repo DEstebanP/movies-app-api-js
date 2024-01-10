@@ -131,3 +131,6 @@ dist
 
 # secrets.mjs (API_KEY)
 src/secrets.mjs
+
+#Images
+assets/
