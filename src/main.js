@@ -1,5 +1,5 @@
 import { API_KEY, API_KEY_TOKEN } from "./secrets.mjs";
-import { categoriesCards, filmDetailContainer, trendingMoviesArticle, movieDetailImg, relatedFilms, filmDetailTitle, filmDetailScore, filmDetailDuration, filmDetailRelease, filmDetailCategories, filmDetailDescription, homeImg, homeImgTitle, popularFilmList, homeExploreImg, moviesGenresBtn} from "./nodes.js";
+import { categoriesCards, filmDetailContainer, trendingMoviesArticle, movieDetailImg, relatedFilms, filmDetailTitle, filmDetailScore, filmDetailDuration, filmDetailRelease, filmDetailCategories, filmDetailDescription, homeImg, homeImgTitle, popularFilmList, homeExploreImg, moviesGenresBtn, sectionTrailerImg, sectionTrailerTitle, sectionTrailerDescription} from "./nodes.js";
 const api = axios.create({
     baseURL: 'https://api.themoviedb.org/3',
     headers: {
@@ -102,22 +102,31 @@ function appendMovies(container, movies, related = false, popular = false) {
         container.appendChild(movieContainer);
     });
 }
+async function getRandomMovie() {
+    const {data} = await api.get('/trending/all/week');
+
+    const movies = data.results;
+    console.log(movies);
+
+    while (true){
+        const randomNum = Math.floor(Math.random()*movies.length);
+        if (movies[randomNum].media_type !== 'person') {
+            return movies[randomNum]
+        }
+    }
+}
 
 // Consuming API
 // Home
 async function getMovieHome() {
-    const {data} = await api.get('/trending/movie/week');
-
-    const movies = data.results;
-    console.log(movies);
-    const randomNum = Math.floor(Math.random()*movies.length);
-    homeImg.src = 'https://image.tmdb.org/t/p/w780' + movies[randomNum].backdrop_path;
-    homeImgTitle.innerText = movies[randomNum].title;
+    const movieHome = await getRandomMovie();
+    console.log(movieHome);
+    homeImg.src = 'https://image.tmdb.org/t/p/w780' + movieHome.backdrop_path;
+    homeImgTitle.innerText = movieHome.media_type == 'tv' ? movieHome.name : movieHome.title ;
 
     //Image of the explore section
-    const randomNum2 = Math.floor(Math.random()*movies.length);
-    homeExploreImg.src = 'https://image.tmdb.org/t/p/w780' + movies[randomNum2].backdrop_path;
-    console.log(movies[randomNum2].poster_path);
+    const movieExplore = await getRandomMovie();
+    homeExploreImg.src = 'https://image.tmdb.org/t/p/w780' +movieExplore.backdrop_path;
 }
 async function getTrendingPreview() {
     const {data} = await api.get('/trending/movie/day');
@@ -133,7 +142,14 @@ async function getPopularPreview() {
     popularFilmList.scrollLeft = 0;
     appendMovies(popularFilmList, movies, false, true);
 }
+async function getMovieSectionTrailer() {
+    const movieTrailer = await getRandomMovie();
+    sectionTrailerImg.src = 'https://image.tmdb.org/t/p/w780' + movieTrailer.backdrop_path;
+    sectionTrailerTitle.innerText =  movieTrailer.media_type == 'tv' ? movieTrailer.name : movieTrailer.title;
+    sectionTrailerDescription.innerText = movieTrailer.overview;
+}
 
+//Explore
 async function getMoviesGenres() {
     try {
         //get genres
@@ -188,6 +204,7 @@ async function getMoviesBySearch(query) {
         console.error(err);
     }
 }
+
 async function getTrends() {
     const {data} = await api.get('/trending/movie/day');
     console.log(data);
@@ -221,4 +238,4 @@ async function getMovieById(id) {
     }
 }
 
-export {getTrendingPreview, getMoviesGenres, getMoviesByCategory, getMoviesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview, getSeriesGenres} 
+export {getTrendingPreview, getMoviesGenres, getMoviesByCategory, getMoviesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview, getSeriesGenres, getMovieSectionTrailer} 

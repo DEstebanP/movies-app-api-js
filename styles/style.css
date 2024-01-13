@@ -167,12 +167,14 @@ h1, h2, h3, p {
 }
 .section-trailer__video {
     position: relative;
-    width: 100%;
+    width: 90%;
+    margin: 0 auto 12px;
     cursor: pointer;
 }
 .section-trailer__img {
     width: 100%;
     object-fit: cover;
+    border-radius: 6px;
 }
 .section-trailer__play {
     position: absolute;
@@ -195,6 +197,34 @@ h1, h2, h3, p {
 .actor-img {
     border-radius: 50%;
     margin-right: 10px;
+}
+
+.trailer {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 1;
+}
+.trailer__icon {
+    position: relative;
+    margin-bottom: 16px;
+    width: fit-content;
+    cursor: pointer;
+}
+.trailer__video {
+    position: relative;
+    width: 90%;
+    max-width: 350px;
+    height: 210px;
 }
 
 /* Popular */

@@ -1,4 +1,4 @@
-import { getTrendingPreview, getMoviesGenres, getMoviesByCategory, getMoviesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview, getSeriesGenres } from "./main.js";
+import { getTrendingPreview, getMoviesGenres, getMoviesByCategory, getMoviesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview, getSeriesGenres, getMovieSectionTrailer } from "./main.js";
 import * as Node from "./nodes.js";
 
 // Add event listener
@@ -109,6 +109,7 @@ function homePage() {
     getMovieHome();
     getTrendingPreview();
     getPopularPreview();
+    getMovieSectionTrailer();
 }
 
 function categoryPage() {
