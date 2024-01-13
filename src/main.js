@@ -1,5 +1,5 @@
 import { API_KEY, API_KEY_TOKEN } from "./secrets.mjs";
-import { categoriesCards, filmDetailContainer, trendingMoviesArticle, movieDetailImg, relatedFilms, filmDetailTitle, filmDetailScore, filmDetailDuration, filmDetailRelease, filmDetailCategories, filmDetailDescription, homeImg, homeImgTitle, popularFilmList, homeExploreImg, moviesGenresBtn, sectionTrailerImg, sectionTrailerTitle, sectionTrailerDescription} from "./nodes.js";
+import { categoriesCards, filmDetailContainer, trendingMoviesArticle, movieDetailImg, relatedFilms, filmDetailTitle, filmDetailScore, filmDetailDuration, filmDetailRelease, filmDetailCategories, filmDetailDescription, homeImg, homeImgTitle, popularFilmList, homeExploreImg, moviesGenresBtn, sectionTrailerImg, sectionTrailerTitle, sectionTrailerDescription, sectionTrailerVideo, trailerVideo} from "./nodes.js";
 const api = axios.create({
     baseURL: 'https://api.themoviedb.org/3',
     headers: {
@@ -116,6 +116,7 @@ async function getRandomMovie() {
     }
 }
 
+
 // Consuming API
 // Home
 async function getMovieHome() {
@@ -147,6 +148,21 @@ async function getMovieSectionTrailer() {
     sectionTrailerImg.src = 'https://image.tmdb.org/t/p/w780' + movieTrailer.backdrop_path;
     sectionTrailerTitle.innerText =  movieTrailer.media_type == 'tv' ? movieTrailer.name : movieTrailer.title;
     sectionTrailerDescription.innerText = movieTrailer.overview;
+    //
+    sectionTrailerVideo.id = `${movieTrailer.id}-${movieTrailer.media_type}`;
+    sectionTrailerVideo.addEventListener('click', () => location.hash = '#play=')
+}
+async function getMovieTrailer(id, media_type) {
+    const {data} = await api.get(`/${media_type}/${id}/videos`);
+    const videos = data.results;
+    console.log(videos);
+    for (const video of videos) {
+        if (video.type == 'Trailer') {
+            console.log(video);
+            trailerVideo.src = `https://www.youtube.com/embed/${video.id}`
+            return
+        }
+    }
 }
 
 //Explore
@@ -238,4 +254,4 @@ async function getMovieById(id) {
     }
 }
 
-export {getTrendingPreview, getMoviesGenres, getMoviesByCategory, getMoviesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview, getSeriesGenres, getMovieSectionTrailer} 
+export {getTrendingPreview, getMoviesGenres, getMoviesByCategory, getMoviesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview, getSeriesGenres, getMovieSectionTrailer, getMovieTrailer} 

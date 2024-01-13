@@ -1,4 +1,4 @@
-import { getTrendingPreview, getMoviesGenres, getMoviesByCategory, getMoviesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview, getSeriesGenres, getMovieSectionTrailer } from "./main.js";
+import { getTrendingPreview, getMoviesGenres, getMoviesByCategory, getMoviesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview, getSeriesGenres, getMovieSectionTrailer, getMovieTrailer } from "./main.js";
 import * as Node from "./nodes.js";
 
 // Add event listener
@@ -27,6 +27,11 @@ Node.searchBtn.addEventListener('click', () => {
     location.hash ="#search=" + Node.searchInputExplore.value;
 });
 Node.trendsBtn.addEventListener('click', () => location.hash = '#trends');
+// X from trailer player
+Node.trailerIcon.addEventListener('click', () => {
+    Node.trailerPlayer.classList.add('inactive');
+    history.back();
+})
 
 function adjustActionAccordingToScreen() {
     const screenWidth = window.innerWidth;
@@ -41,8 +46,8 @@ window.addEventListener('resize', adjustActionAccordingToScreen);
 function smoothScroll(){
     const currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
     if (currentScroll > 0) {
-         window.requestAnimationFrame(smoothScroll);
-         window.scrollTo (0,currentScroll - (currentScroll/5));
+        window.requestAnimationFrame(smoothScroll);
+        window.scrollTo (0,currentScroll - (currentScroll/5));
     }
 };
 function navigator() {
@@ -61,6 +66,8 @@ function navigator() {
         categoryPage();
     } else if (location.hash.startsWith('#search=')) {
         searchPage();
+    } else if (location.hash.startsWith('#play=')) {
+        playPage();
     }
      else {
     homePage();
@@ -103,6 +110,7 @@ function homePage() {
     Node.searchResultsHeader.classList.add('inactive');
     Node.sectionCategories.classList.add('inactive');
     Node.sectionFilmDetail.classList.add('inactive');
+    Node.trailerPlayer.classList.add('inactive');
     Node.exploreBtn.classList.remove('inactive');
     Node.header.style.backgroundColor = 'rgba(30, 29, 27, 0.25)';
     Node.movieDetailImg.style.backgroundImage = '';
@@ -122,6 +130,7 @@ function categoryPage() {
     Node.sectionFilmDetail.classList.add('inactive');
     Node.exploreBtn.classList.add('inactive');
     Node.trendingBtn.classList.add('inactive');
+    Node.trailerPlayer.classList.add('inactive');
 
     Node.searchResultsHeader.classList.remove('inactive');
     Node.searchResultsHeader.style.marginBottom = '20px';
@@ -152,6 +161,7 @@ function searchPage() {
     Node.sectionFilmDetail.classList.add('inactive');
     Node.exploreBtn.classList.add('inactive');
     Node.trendingBtn.classList.add('inactive');
+    Node.trailerPlayer.classList.add('inactive');
 
     Node.searchResultsHeader.classList.remove('inactive');
     Node.searchResultsHeader.style.marginBottom = '20px';
@@ -182,13 +192,13 @@ function movieDetailsPage() {
     Node.sectionExplore.classList.add('inactive');
     Node.sectionCategories.classList.add('inactive');
     Node.searchResultsHeader.classList.add('inactive');
+    Node.trailerPlayer.classList.add('inactive');
 
     Node.sectionFilmDetail.classList.remove('inactive');
     Node.header.style.backgroundColor = '#090911';
 
     const [_, movieData] = location.hash.split('=');
     const [id, movieName] = movieData.split('-');
-    console.log(id);
     getMovieById(id);
 }
 
@@ -205,6 +215,7 @@ function explorePage() {
     Node.searchFormExplore.classList.remove('inactive');
     Node.exploreTitle.classList.add('inactive');
     Node.exploreSubtitle.classList.add('inactive');
+    Node.trailerPlayer.classList.add('inactive');
     
     Node.sectionCategories.classList.remove('inactive');
     Node.header.style.backgroundColor = '#090911';
@@ -234,7 +245,14 @@ function trendsPage() {
     Node.trendingFilmList.classList.add('section-trending__filmList--categories');
     Node.trendingTitle.classList.remove('inactive');
     Node.trendingBtn.classList.add('inactive');
+    Node.trailerPlayer.classList.add('inactive');
     Node.header.style.backgroundColor = '#090911';
     Node.movieDetailImg.style.backgroundImage = '';
     getTrends();
+}
+function playPage() {
+    const [id, media_type] = Node.sectionTrailerVideo.id.split('-');
+    console.log({id, media_type});
+    getMovieTrailer(id, media_type);
+    Node.trailerPlayer.classList.remove('inactive');
 }
