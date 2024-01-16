@@ -29,9 +29,8 @@ Node.searchBtn.addEventListener('click', () => {
 Node.trendsBtn.addEventListener('click', () => location.hash = '#trends');
 // X from trailer player
 Node.trailerIcon.addEventListener('click', () => {
-    history.back();
     Node.trailerPlayer.classList.add('inactive');
-    //! Corregir error
+    Node.trailerVideo.src = '';
 })
 
 function adjustActionAccordingToScreen() {
@@ -67,10 +66,7 @@ function navigator() {
         categoryPage();
     } else if (location.hash.startsWith('#search=')) {
         searchPage();
-    } else if (location.hash.startsWith('#play=')) {
-        playPage();
-    }
-     else {
+    } else {
     homePage();
     }
 }
@@ -250,9 +246,4 @@ function trendsPage() {
     Node.header.style.backgroundColor = '#090911';
     Node.movieDetailImg.style.backgroundImage = '';
     getTrends();
-}
-function playPage() {
-    const [id, media_type] = Node.sectionTrailerVideo.id.split('-');
-    getMovieTrailer(id, media_type);
-    Node.trailerPlayer.classList.remove('inactive');
 }

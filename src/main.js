@@ -1,5 +1,5 @@
 import { API_KEY, API_KEY_TOKEN } from "./secrets.mjs";
-import { categoriesCards, filmDetailContainer, trendingMoviesArticle, movieDetailImg, relatedFilms, filmDetailTitle, filmDetailScore, filmDetailDuration, filmDetailRelease, filmDetailCategories, filmDetailDescription, homeImg, homeImgTitle, popularFilmList, homeExploreImg, moviesGenresBtn, sectionTrailerImg, sectionTrailerTitle, sectionTrailerDescription, sectionTrailerVideo, trailerVideo} from "./nodes.js";
+import { categoriesCards, filmDetailContainer, trendingMoviesArticle, movieDetailImg, relatedFilms, filmDetailTitle, filmDetailScore, filmDetailDuration, filmDetailRelease, filmDetailCategories, filmDetailDescription, homeImg, homeImgTitle, popularFilmList, homeExploreImg, moviesGenresBtn, sectionTrailerImg, sectionTrailerTitle, sectionTrailerDescription, sectionTrailerVideo, trailerVideo, trailerPlayer} from "./nodes.js";
 const api = axios.create({
     baseURL: 'https://api.themoviedb.org/3',
     headers: {
@@ -147,13 +147,15 @@ async function getMovieSectionTrailer() {
     sectionTrailerTitle.innerText =  movieTrailer.media_type == 'tv' ? movieTrailer.name : movieTrailer.title;
     sectionTrailerDescription.innerText = movieTrailer.overview;
     //
-    sectionTrailerVideo.id = `${movieTrailer.id}-${movieTrailer.media_type}`;
-    sectionTrailerVideo.addEventListener('click', () => location.hash = `#play=`)
+    sectionTrailerVideo.addEventListener('click', () => playerForTrailer(movieTrailer.id, movieTrailer.media_type))
+}
+function playerForTrailer(id, media_type) {
+    getMovieTrailer(id, media_type);
+    trailerPlayer.classList.remove('inactive');
 }
 async function getMovieTrailer(id, media_type) {
     const {data} = await api.get(`/${media_type}/${id}/videos`);
     const videos = data.results;
-    console.log(videos);
     for (const video of videos) {
         if (video.type == 'Trailer') {
             trailerVideo.src = `https://www.youtube.com/embed/${video.key}`
