@@ -106,7 +106,6 @@ async function getRandomMovie() {
     const {data} = await api.get('/trending/all/week');
 
     const movies = data.results;
-    console.log(movies);
 
     while (true){
         const randomNum = Math.floor(Math.random()*movies.length);
@@ -121,7 +120,6 @@ async function getRandomMovie() {
 // Home
 async function getMovieHome() {
     const movieHome = await getRandomMovie();
-    console.log(movieHome);
     homeImg.src = 'https://image.tmdb.org/t/p/w780' + movieHome.backdrop_path;
     homeImgTitle.innerText = movieHome.media_type == 'tv' ? movieHome.name : movieHome.title ;
 
@@ -150,7 +148,7 @@ async function getMovieSectionTrailer() {
     sectionTrailerDescription.innerText = movieTrailer.overview;
     //
     sectionTrailerVideo.id = `${movieTrailer.id}-${movieTrailer.media_type}`;
-    sectionTrailerVideo.addEventListener('click', () => location.hash = '#play=')
+    sectionTrailerVideo.addEventListener('click', () => location.hash = `#play=`)
 }
 async function getMovieTrailer(id, media_type) {
     const {data} = await api.get(`/${media_type}/${id}/videos`);
@@ -158,8 +156,7 @@ async function getMovieTrailer(id, media_type) {
     console.log(videos);
     for (const video of videos) {
         if (video.type == 'Trailer') {
-            console.log(video);
-            trailerVideo.src = `https://www.youtube.com/embed/${video.id}`
+            trailerVideo.src = `https://www.youtube.com/embed/${video.key}`
             return
         }
     }

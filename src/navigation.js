@@ -29,8 +29,9 @@ Node.searchBtn.addEventListener('click', () => {
 Node.trendsBtn.addEventListener('click', () => location.hash = '#trends');
 // X from trailer player
 Node.trailerIcon.addEventListener('click', () => {
-    Node.trailerPlayer.classList.add('inactive');
     history.back();
+    Node.trailerPlayer.classList.add('inactive');
+    //! Corregir error
 })
 
 function adjustActionAccordingToScreen() {
@@ -252,7 +253,6 @@ function trendsPage() {
 }
 function playPage() {
     const [id, media_type] = Node.sectionTrailerVideo.id.split('-');
-    console.log({id, media_type});
     getMovieTrailer(id, media_type);
     Node.trailerPlayer.classList.remove('inactive');
 }
