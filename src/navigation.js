@@ -1,4 +1,4 @@
-import { getTrendingPreview, getMoviesGenres, getMoviesByCategory, getMoviesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview, getSeriesGenres, getMovieSectionTrailer, getMovieTrailer } from "./main.js";
+import { getTrendingPreview, getMoviesGenres, getMoviesByCategory, getMoviesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview, getSeriesGenres, getMovieSectionTrailer, getCastSectionTrailer } from "./main.js";
 import * as Node from "./nodes.js";
 
 // Add event listener
@@ -113,8 +113,8 @@ function homePage() {
     Node.movieDetailImg.style.backgroundImage = '';
     getMovieHome();
     getTrendingPreview();
-    getPopularPreview();
     getMovieSectionTrailer();
+    getPopularPreview();
 }
 
 function categoryPage() {

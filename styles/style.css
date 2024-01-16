@@ -195,8 +195,11 @@ h1, h2, h3, p {
     margin-bottom: 10px;
 }
 .actor-img {
-    border-radius: 50%;
-    margin-right: 10px;
+    width: 30px;
+    height: 45px;
+    border-radius: 20px;
+    margin-right: 12px;
+    object-fit: cover;
 }
 
 .trailer {

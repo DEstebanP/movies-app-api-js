@@ -47,10 +47,7 @@ export const sectionTrailerImg = document.querySelector('.section-trailer__img')
 export const sectionTrailerTitle = document.querySelector('.section-trailer__title');
 export const sectionTrailerDescription = document.querySelector('.section-trailer__text');
 export const sectionTrailerVideo = document.querySelector('.section-trailer__video');
+export const sectionTrailerCast = document.querySelector('.section-trailer__cast');
 export const trailerPlayer = document.querySelector('.trailer');
 export const trailerIcon = document.querySelector('.trailer__icon');
 export const trailerVideo = document.querySelector('.trailer__video');
-
-
-
-

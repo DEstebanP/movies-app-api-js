@@ -1,5 +1,5 @@
 import { API_KEY, API_KEY_TOKEN } from "./secrets.mjs";
-import { categoriesCards, filmDetailContainer, trendingMoviesArticle, movieDetailImg, relatedFilms, filmDetailTitle, filmDetailScore, filmDetailDuration, filmDetailRelease, filmDetailCategories, filmDetailDescription, homeImg, homeImgTitle, popularFilmList, homeExploreImg, moviesGenresBtn, sectionTrailerImg, sectionTrailerTitle, sectionTrailerDescription, sectionTrailerVideo, trailerVideo, trailerPlayer} from "./nodes.js";
+import { categoriesCards, filmDetailContainer, trendingMoviesArticle, movieDetailImg, relatedFilms, filmDetailTitle, filmDetailScore, filmDetailDuration, filmDetailRelease, filmDetailCategories, filmDetailDescription, homeImg, homeImgTitle, popularFilmList, homeExploreImg, moviesGenresBtn, sectionTrailerImg, sectionTrailerTitle, sectionTrailerDescription, sectionTrailerVideo, trailerVideo, trailerPlayer, sectionTrailer, sectionTrailerCast} from "./nodes.js";
 const api = axios.create({
     baseURL: 'https://api.themoviedb.org/3',
     headers: {
@@ -147,11 +147,12 @@ async function getMovieSectionTrailer() {
     sectionTrailerTitle.innerText =  movieTrailer.media_type == 'tv' ? movieTrailer.name : movieTrailer.title;
     sectionTrailerDescription.innerText = movieTrailer.overview;
     //
-    sectionTrailerVideo.addEventListener('click', () => playerForTrailer(movieTrailer.id, movieTrailer.media_type))
-}
-function playerForTrailer(id, media_type) {
-    getMovieTrailer(id, media_type);
-    trailerPlayer.classList.remove('inactive');
+    sectionTrailerVideo.addEventListener('click', () => {
+        getMovieTrailer(movieTrailer.id, movieTrailer.media_type);
+        trailerPlayer.classList.remove('inactive');
+    })
+    //
+    getCastSectionTrailer(movieTrailer.id)
 }
 async function getMovieTrailer(id, media_type) {
     const {data} = await api.get(`/${media_type}/${id}/videos`);
@@ -162,6 +163,25 @@ async function getMovieTrailer(id, media_type) {
             return
         }
     }
+}
+async function getCastSectionTrailer(id) {
+    try {
+        const {data} = await api.get(`/movie/${id}/credits`);
+        const cast = data.cast;
+        console.log(cast);
+        const imageUrl = 'https://image.tmdb.org/t/p/w45'
+
+        for (let i = 0; i <= 6; i++) {
+            const actorImg = document.createElement('img');
+            actorImg.classList.add('actor-img');
+            actorImg.src = `${imageUrl}${cast[i].profile_path}`;
+            
+            sectionTrailerCast.appendChild(actorImg);
+        }
+    } catch (err) {
+        console.log(err);
+    }
+/* <img src="./assets/actor-avatar.svg" alt="" class="actor-img"> */
 }
 
 //Explore
@@ -253,4 +273,4 @@ async function getMovieById(id) {
     }
 }
 
-export {getTrendingPreview, getMoviesGenres, getMoviesByCategory, getMoviesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview, getSeriesGenres, getMovieSectionTrailer, getMovieTrailer} 
+export {getTrendingPreview, getMoviesGenres, getMoviesByCategory, getMoviesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview, getSeriesGenres, getMovieSectionTrailer, getMovieTrailer, getCastSectionTrailer} 
