@@ -1,5 +1,5 @@
 import { API_KEY, API_KEY_TOKEN } from "./secrets.mjs";
-import { categoriesCards, filmDetailContainer, trendingMoviesArticle, movieDetailImg, relatedFilms, filmDetailTitle, filmDetailScore, filmDetailDuration, filmDetailRelease, filmDetailCategories, filmDetailDescription, homeImg, homeImgTitle, popularFilmList, homeExploreImg, moviesGenresBtn, sectionTrailerImg, sectionTrailerTitle, sectionTrailerDescription, sectionTrailerVideo, trailerVideo, trailerPlayer, sectionTrailer, sectionTrailerCast, } from "./nodes.js";
+import { categoriesCards, filmDetailContainer, trendingMoviesArticle, movieDetailImg, relatedFilms, filmDetailTitle, filmDetailScore, filmDetailDuration, filmDetailRelease, filmDetailCategories, filmDetailDescription, homeImg, homeImgTitle, popularFilmList, homeExploreImg, moviesGenresBtn, sectionTrailerImg, sectionTrailerTitle, sectionTrailerDescription, sectionTrailerVideo, trailerVideo, trailerPlayer, sectionTrailer, sectionTrailerCast, filmDetailSubtitle} from "./nodes.js";
 const api = axios.create({
     baseURL: 'https://api.themoviedb.org/3',
     headers: {
@@ -97,11 +97,20 @@ function appendMovies(container, movies, related = false, popular = false) {
         } else {
             movieContainer.append(movieImg, movieTitle, movieYear, movieRate);
         }
-
-        movieContainer.addEventListener('click', () => location.hash = `#movie=${movie.id}-${movie.title}`)
+        let movieMediaType;
+        let title;
+        if (movie.first_air_date) {
+            movieMediaType = 'tv';
+            title = movie.name
+        } else {
+            movieMediaType = 'movie';
+            title = movie.title
+        }
+        movieContainer.addEventListener('click', () => location.hash = `#movie=${movie.id}-${title}-${movieMediaType}`)
         container.appendChild(movieContainer);
     });
 }
+
 async function getRandomMovie() {
     const {data} = await api.get('/trending/all/week');
 
@@ -113,6 +122,30 @@ async function getRandomMovie() {
             return movies[randomNum]
         }
     }
+}
+function renderMovieDetail(movie) {
+    movieDetailImg.style.backgroundImage = `linear-gradient(180deg, rgba(0, 0, 0, 0.35) 19.27%, rgba(0, 0, 0, 0) 29.17%), url('https://image.tmdb.org/t/p/w500${movie.poster_path}')`;
+    filmDetailTitle.innerText = movie.original_title;
+
+    filmDetailScore.innerText = '⭐' + movie.vote_average.toFixed(1);
+
+    filmDetailDuration.innerText = movie.runtime; //! PENDIENTE
+    filmDetailRelease.innerText = movie.release_date; //! PENDIENTE
+    filmDetailCategories.innerText = movie.genres.map(genre => genre.name).join(' - '); //!PENDIENTE - add click event to each genre
+
+    filmDetailDescription.innerText = movie.overview;
+}
+function renderSerieDetail(serie) {
+    movieDetailImg.style.backgroundImage = `linear-gradient(180deg, rgba(0, 0, 0, 0.35) 19.27%, rgba(0, 0, 0, 0) 29.17%), url('https://image.tmdb.org/t/p/w500${serie.poster_path}')`;
+    filmDetailTitle.innerText = serie.name;
+
+    filmDetailScore.innerText = '⭐' + serie.vote_average.toFixed(1);
+    const season = serie.number_of_seasons < 2 ? 'SEASON' : 'SEASONS'
+    filmDetailDuration.innerText = serie.number_of_seasons +' '+ season; //! PENDIENTE
+    filmDetailRelease.innerText = serie.first_air_date; //! PENDIENTE
+    filmDetailCategories.innerText = serie.genres.map(genre => genre.name).join(' - '); //!PENDIENTE - add click event to each genre
+
+    filmDetailDescription.innerText = serie.overview;
 }
 
 
@@ -254,19 +287,7 @@ async function getTrends() {
 async function getMovieById(id) {
     try {
         const { data: movie } = await api.get(`/movie/${id}`);
-        
-        
-        movieDetailImg.style.backgroundImage = `linear-gradient(180deg, rgba(0, 0, 0, 0.35) 19.27%, rgba(0, 0, 0, 0) 29.17%), url('https://image.tmdb.org/t/p/w500${movie.poster_path}')`;
-        filmDetailTitle.innerText = movie.original_title;
-        
-        filmDetailScore.innerText = '⭐'+movie.vote_average.toFixed(1);
-        
-        filmDetailDuration.innerText = movie.runtime; //! PENDIENTE
-        filmDetailRelease.innerText = movie.release_date; //! PENDIENTE
-        filmDetailCategories.innerText = movie.genres.map(genre => genre.name).join(' - '); //!PENDIENTE - add click event to each genre
-
-        filmDetailDescription.innerText = movie.overview;
-
+        renderMovieDetail(movie);
 
         //Related movies
         const { data } = await api.get(`/movie/${id}/similar`);
@@ -277,4 +298,16 @@ async function getMovieById(id) {
     }
 }
 
-export {getTrendingPreview, getMoviesGenres, getMoviesByCategory, getMoviesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview, getSeriesGenres, getMovieSectionTrailer, getMovieTrailer, getCastSectionTrailer} 
+
+async function getSerieById(id) {
+    const { data: serie } = await api.get(`/tv/${id}`);
+    renderSerieDetail(serie);
+
+    //Related series
+    const { data } = await api.get(`/tv/${id}/similar`);
+    const relatedSeries = data.results;
+    filmDetailSubtitle.innerText = 'Similar Series'
+    appendMovies(relatedFilms, relatedSeries, true);
+}
+
+export {getTrendingPreview, getMoviesGenres, getMoviesByCategory, getMoviesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview, getSeriesGenres, getMovieSectionTrailer, getMovieTrailer, getCastSectionTrailer, getSerieById} 

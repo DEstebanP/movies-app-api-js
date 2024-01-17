@@ -1,4 +1,4 @@
-import { getTrendingPreview, getMoviesGenres, getMoviesByCategory, getMoviesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview, getSeriesGenres, getMovieSectionTrailer, getCastSectionTrailer } from "./main.js";
+import { getTrendingPreview, getMoviesGenres, getMoviesByCategory, getMoviesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview, getSeriesGenres, getMovieSectionTrailer, getCastSectionTrailer, getSerieById } from "./main.js";
 import * as Node from "./nodes.js";
 
 // Add event listener
@@ -195,8 +195,9 @@ function movieDetailsPage() {
     Node.header.style.backgroundColor = '#090911';
 
     const [_, movieData] = location.hash.split('=');
-    const [id, movieName] = movieData.split('-');
-    getMovieById(id);
+    const [id, movieName, media_type] = movieData.split('-');
+    media_type == 'movie' ? getMovieById(id) : getSerieById(id);
+    
 }
 
 function explorePage() {

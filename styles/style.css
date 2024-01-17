@@ -426,7 +426,7 @@ h1, h2, h3, p {
     color: var(--base-color);
     font-weight: 700;
 }
-.filmDetail__title2 {
+.filmDetail__subtitle{
     margin: 20px 0 10px;
 }
 

@@ -33,6 +33,7 @@ export const trendsBtn = document.querySelector('#trendsBtn');
 
 export const movieDetailImg = document.querySelector('.filmDetail__img');
 export const filmDetailTitle = document.querySelector('.filmDetail__title');
+export const filmDetailSubtitle = document.querySelector('.filmDetail__subtitle');
 export const filmDetailScore = document.querySelector('.filmDetail__score');
 export const filmDetailDuration = document.querySelector('.filmDetail__info :nth-child(1)');
 export const filmDetailRelease = document.querySelector('.filmDetail__info :nth-child(2)');
