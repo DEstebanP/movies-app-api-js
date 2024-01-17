@@ -1,5 +1,5 @@
 import { API_KEY, API_KEY_TOKEN } from "./secrets.mjs";
-import { categoriesCards, filmDetailContainer, trendingMoviesArticle, movieDetailImg, relatedFilms, filmDetailTitle, filmDetailScore, filmDetailDuration, filmDetailRelease, filmDetailCategories, filmDetailDescription, homeImg, homeImgTitle, popularFilmList, homeExploreImg, moviesGenresBtn, sectionTrailerImg, sectionTrailerTitle, sectionTrailerDescription, sectionTrailerVideo, trailerVideo, trailerPlayer, sectionTrailer, sectionTrailerCast} from "./nodes.js";
+import { categoriesCards, filmDetailContainer, trendingMoviesArticle, movieDetailImg, relatedFilms, filmDetailTitle, filmDetailScore, filmDetailDuration, filmDetailRelease, filmDetailCategories, filmDetailDescription, homeImg, homeImgTitle, popularFilmList, homeExploreImg, moviesGenresBtn, sectionTrailerImg, sectionTrailerTitle, sectionTrailerDescription, sectionTrailerVideo, trailerVideo, trailerPlayer, sectionTrailer, sectionTrailerCast, } from "./nodes.js";
 const api = axios.create({
     baseURL: 'https://api.themoviedb.org/3',
     headers: {
@@ -152,7 +152,8 @@ async function getMovieSectionTrailer() {
         trailerPlayer.classList.remove('inactive');
     })
     //
-    getCastSectionTrailer(movieTrailer.id)
+    console.log(movieTrailer.id);
+    getCastSectionTrailer(movieTrailer.id, movieTrailer.media_type);
 }
 async function getMovieTrailer(id, media_type) {
     const {data} = await api.get(`/${media_type}/${id}/videos`);
@@ -164,14 +165,17 @@ async function getMovieTrailer(id, media_type) {
         }
     }
 }
-async function getCastSectionTrailer(id) {
+async function getCastSectionTrailer(id, media_type) {
     try {
-        const {data} = await api.get(`/movie/${id}/credits`);
+        const {data} = await api.get(`/${media_type}/${id}/credits`);
         const cast = data.cast;
-        console.log(cast);
         const imageUrl = 'https://image.tmdb.org/t/p/w45'
-
-        for (let i = 0; i <= 6; i++) {
+        
+        while (sectionTrailerCast.firstChild) {
+            sectionTrailerCast.removeChild(sectionTrailerCast.firstChild);
+        }
+        const firstSixElementsCast = cast.slice(0,6);
+        for (let i = 0; i <= firstSixElementsCast.length; i++) {
             const actorImg = document.createElement('img');
             actorImg.classList.add('actor-img');
             actorImg.src = `${imageUrl}${cast[i].profile_path}`;
@@ -179,7 +183,7 @@ async function getCastSectionTrailer(id) {
             sectionTrailerCast.appendChild(actorImg);
         }
     } catch (err) {
-        console.log(err);
+        console.error(err);
     }
 /* <img src="./assets/actor-avatar.svg" alt="" class="actor-img"> */
 }

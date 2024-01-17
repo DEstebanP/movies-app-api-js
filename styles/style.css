@@ -194,6 +194,12 @@ h1, h2, h3, p {
 .section-trailer__rate {
     margin-bottom: 10px;
 }
+.half-star {
+    display: inline-block;
+    width: 100%;
+    overflow: hidden;
+    clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);
+}
 .actor-img {
     width: 30px;
     height: 45px;
