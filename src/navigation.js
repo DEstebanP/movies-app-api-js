@@ -1,4 +1,4 @@
-import { getTrendingPreview, getMoviesGenres, getMoviesByCategory, getMoviesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview, getSeriesGenres, getMovieSectionTrailer, getCastSectionTrailer, getSerieById } from "./main.js";
+import { getTrendingPreview, getMoviesGenres, getMoviesOrSeriesByCategory, getMoviesAndSeriesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview, getSeriesGenres, getMovieSectionTrailer, getCastSectionTrailer, getSerieById, getMovieTrailer } from "./main.js";
 import * as Node from "./nodes.js";
 
 // Add event listener
@@ -31,6 +31,12 @@ Node.trendsBtn.addEventListener('click', () => location.hash = '#trends');
 Node.trailerIcon.addEventListener('click', () => {
     Node.trailerPlayer.classList.add('inactive');
     Node.trailerVideo.src = '';
+});
+Node.filmDetailTrailer.addEventListener('click', () => {
+    const [_, search] = location.hash.split('=');
+    const [id, title, media_type] = search.split('-');
+    getMovieTrailer(id, media_type);
+    Node.trailerPlayer.classList.remove('inactive');
 })
 
 function adjustActionAccordingToScreen() {
@@ -43,7 +49,7 @@ function adjustActionAccordingToScreen() {
 window.addEventListener('load', adjustActionAccordingToScreen);
 window.addEventListener('resize', adjustActionAccordingToScreen);
 
-function smoothScroll(){
+function smoothScroll() {
     const currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
     if (currentScroll > 0) {
         window.requestAnimationFrame(smoothScroll);
@@ -51,10 +57,6 @@ function smoothScroll(){
     }
 };
 function navigator() {
-    /* window.scrollTo({
-        top: 0,
-        behavior: 'auto'
-      }); */
     smoothScroll();
     if (location.hash.startsWith('#trends')) {
         trendsPage();
@@ -145,7 +147,7 @@ function categoryPage() {
     const genreId = hashStr.slice(hashStr.indexOf('=')+1, hashStr.indexOf('-'));
     const genreName = hashStr.slice(hashStr.indexOf('-')+1);
     Node.exploreSubtitle.innerText = genreName;
-    getMoviesByCategory(genreId);
+    getMoviesOrSeriesByCategory(genreId);
 }
 
 function searchPage() {
@@ -176,7 +178,7 @@ function searchPage() {
     const query = decodeURI(search).replace(new RegExp(" ", "g"), "+");
     console.log(query);
     Node.exploreSubtitle.innerText = `Results for ${decodeURI(search)}`;
-    getMoviesBySearch(query);
+    getMoviesAndSeriesBySearch(query);
 }
 
 function movieDetailsPage() {
