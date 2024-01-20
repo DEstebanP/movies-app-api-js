@@ -1,5 +1,5 @@
 import { API_KEY, API_KEY_TOKEN } from "./secrets.mjs";
-import { categoriesCards, filmDetailContainer, trendingMoviesArticle, movieDetailImg, relatedFilms, filmDetailTitle, filmDetailScore, filmDetailDuration, filmDetailRelease, filmDetailCategories, filmDetailDescription, homeImg, homeImgTitle, popularFilmList, homeExploreImg, moviesGenresBtn, sectionTrailerImg, sectionTrailerTitle, sectionTrailerDescription, sectionTrailerVideo, trailerVideo, trailerPlayer, sectionTrailer, sectionTrailerCast, filmDetailSubtitle, sectionTrailerRate} from "./nodes.js";
+import { categoriesCards, filmDetailContainer, trendingMoviesArticle, movieDetailImg, relatedFilms, filmDetailTitle, filmDetailScore, filmDetailDuration, filmDetailRelease, filmDetailCategories, filmDetailDescription, homeImg, homeImgTitle, popularFilmList, homeExploreImg, moviesGenresBtn, sectionTrailerImg, sectionTrailerTitle, sectionTrailerDescription, sectionTrailerVideo, trailerVideo, trailerPlayer, sectionTrailer, sectionTrailerCast, filmDetailSubtitle, sectionTrailerRate, homeSectionImg} from "./nodes.js";
 const api = axios.create({
     baseURL: 'https://api.themoviedb.org/3',
     headers: {
@@ -98,18 +98,24 @@ function appendMovies(container, movies, related = false, popular = false) {
         } else {
             movieContainer.append(movieImg, movieTitle, movieYear, movieRate);
         }
-        let movieMediaType;
-        let title;
-        if (movie.first_air_date) {
-            movieMediaType = 'tv';
-            title = movie.name
-        } else {
-            movieMediaType = 'movie';
-            title = movie.title
-        }
+        const { title, movieMediaType } = identifyMediaType(movie);
         movieContainer.addEventListener('click', () => location.hash = `#movie=${movie.id}-${title}-${movieMediaType}`)
         container.appendChild(movieContainer);
     });
+}
+
+
+function identifyMediaType(movie) {
+    let movieMediaType;
+    let title;
+    if (movie.first_air_date) {
+        movieMediaType = 'tv';
+        title = movie.name;
+    } else {
+        movieMediaType = 'movie';
+        title = movie.title;
+    }
+    return { title, movieMediaType };
 }
 
 async function getRandomMovieOrSeries() {
@@ -141,7 +147,8 @@ async function getMovieHome() {
     const movieHome = await getRandomMovieOrSeries();
     homeImg.src = 'https://image.tmdb.org/t/p/w780' + movieHome.backdrop_path;
     homeImgTitle.innerText = movieHome.media_type == 'tv' ? movieHome.name : movieHome.title ;
-
+    const { title, movieMediaType }= identifyMediaType(movieHome);
+    homeSectionImg.addEventListener('click', () => location.hash = `#movie=${movieHome.id}-${title}-${movieMediaType}`)
     //Image of the explore section
     const movieExplore = await getRandomMovieOrSeries();
     homeExploreImg.src = 'https://image.tmdb.org/t/p/w780' +movieExplore.backdrop_path;

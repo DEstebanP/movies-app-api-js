@@ -40,6 +40,7 @@ export const filmDetailRelease = document.querySelector('.filmDetail__info :nth-
 export const filmDetailCategories = document.querySelector('.filmDetail__info :nth-child(3)');
 export const filmDetailDescription = document.querySelector('.filmDetail__description');
 export const filmDetailTrailer = document.querySelector('.filmDetail__trailer');
+export const homeSectionImg = document.querySelector('.section-image');
 export const homeImg = document.querySelector('.section-image__img');
 export const homeImgTitle = document.querySelector('.section-image__film-title');
 export const homeExploreImg = document.querySelector('.explore__img');
