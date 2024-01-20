@@ -1,4 +1,4 @@
-import { getTrendingPreview, getMoviesGenres, getMoviesOrSeriesByCategory, getMoviesAndSeriesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview, getSeriesGenres, getMovieSectionTrailer, getCastSectionTrailer, getSerieById, getMovieTrailer } from "./main.js";
+import { getTrendingPreview, getMoviesGenres, getMoviesByCategory, getSeriesByCategory, getMoviesAndSeriesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview, getSeriesGenres, getMovieSectionTrailer, getCastSectionTrailer, getSerieById, getMovieTrailer } from "./main.js";
 import * as Node from "./nodes.js";
 
 // Add event listener
@@ -43,9 +43,30 @@ function adjustActionAccordingToScreen() {
     const screenWidth = window.innerWidth;
     if(screenWidth) {
         console.log(screenWidth);
-        Node.exploreBtn.addEventListener('click', () => location.hash = '#explore')
+        Node.exploreBtn.addEventListener('click', () => location.hash = '#explore=movies')
     }
 }
+// Change between movies and series genres
+Node.moviesGenresBtn.addEventListener('click', styleExploreMoviesBtn);
+function styleExploreMoviesBtn() {
+    location.hash = '#explore=movies'
+
+    Node.moviesGenresBtn.style.backgroundColor = '#F1EEF5';
+    Node.moviesGenresBtn.style.color = '#000000';
+
+    Node.seriesGenresBtn.style.backgroundColor = 'transparent';
+    Node.seriesGenresBtn.style.color = '#F1EEF5';
+}
+Node.seriesGenresBtn.addEventListener('click', styleExploreSeriesBtn);
+function styleExploreSeriesBtn() {
+    location.hash = '#explore=tv'
+    Node.seriesGenresBtn.style.backgroundColor = '#F1EEF5';
+    Node.seriesGenresBtn.style.color = '#000000';
+
+    Node.moviesGenresBtn.style.backgroundColor = 'transparent';
+    Node.moviesGenresBtn.style.color = '#F1EEF5';
+}
+
 window.addEventListener('load', adjustActionAccordingToScreen);
 window.addEventListener('resize', adjustActionAccordingToScreen);
 
@@ -72,27 +93,7 @@ function navigator() {
     homePage();
     }
 }
-// Change between movies and series genres
-Node.moviesGenresBtn.addEventListener('click', () => {
-    Node.moviesGenresBtn.style.backgroundColor = '#F1EEF5';
-    Node.moviesGenresBtn.style.color = '#000000';
-    Node.moviesGenresBtn.classList.add('active');
-    Node.seriesGenresBtn.classList.remove('active');
 
-    Node.seriesGenresBtn.style.backgroundColor = 'transparent';
-    Node.seriesGenresBtn.style.color = '#F1EEF5';
-    getMoviesGenres();
-});
-Node.seriesGenresBtn.addEventListener('click', () => {
-    Node.seriesGenresBtn.style.backgroundColor = '#F1EEF5';
-    Node.seriesGenresBtn.style.color = '#000000';
-    Node.seriesGenresBtn.classList.add('active');
-    Node.moviesGenresBtn.classList.remove('active');
-
-    Node.moviesGenresBtn.style.backgroundColor = 'transparent';
-    Node.moviesGenresBtn.style.color = '#F1EEF5';
-    getSeriesGenres();
-})
 
 function homePage() {
     console.log('Home!!');
@@ -143,11 +144,14 @@ function categoryPage() {
     Node.header.style.backgroundColor = '#090911';
     Node.movieDetailImg.style.backgroundImage = '';
     
-    const hashStr = decodeURI(location.hash);
-    const genreId = hashStr.slice(hashStr.indexOf('=')+1, hashStr.indexOf('-'));
-    const genreName = hashStr.slice(hashStr.indexOf('-')+1);
-    Node.exploreSubtitle.innerText = genreName;
-    getMoviesOrSeriesByCategory(genreId);
+    const [_, contentDescription] = location.hash.split('=');
+    const [genreId, genreName, media_type] = contentDescription.split('-');
+    Node.exploreSubtitle.innerText = decodeURI(genreName);
+    if (media_type == 'movies') {
+        getMoviesByCategory(genreId);
+    } else {
+        getSeriesByCategory(genreId);
+    }
 }
 
 function searchPage() {
@@ -220,9 +224,15 @@ function explorePage() {
     Node.sectionCategories.classList.remove('inactive');
     Node.header.style.backgroundColor = '#090911';
     Node.movieDetailImg.style.backgroundImage = '';
-    const isGenreNodes = Array.from(Node.categoriesCards.children);
-    const isMoviesActive = Node.moviesGenresBtn.classList.contains('active');
-    isMoviesActive ? getMoviesGenres() : getSeriesGenres();
+    
+    const isExploreForMovies = location.hash == '#explore=movies'
+    if (isExploreForMovies) {
+        getMoviesGenres();
+        styleExploreMoviesBtn();
+    } else {
+        getSeriesGenres();
+        styleExploreSeriesBtn();
+    }
 }
 
 function trendsPage() {

@@ -44,7 +44,8 @@ async function getGenres(genres, apiUrl) {
         categoryCard.append(cardImg, cardTitle);
         
         categoryCard.addEventListener('click', () => {
-            location.hash = `#category=${genre.id}-${genre.name}`;
+            const [_ , mediaType] = location.hash.split('=')
+            location.hash = `#category=${genre.id}-${genre.name}-${mediaType}`;
         })
         categoriesCards.appendChild(categoryCard);
     }
@@ -229,21 +230,23 @@ async function getSeriesGenres() {
         console.error(err)
     }
 }  
-async function getMoviesOrSeriesByCategory(genreId) {
+async function getMoviesByCategory(genreId) {
     try {
-        const isMoviesActive = moviesGenresBtn.classList.contains('active');
-        let movies;
-        if (isMoviesActive) {
-            const { data } = await api.get(`/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&with_genres=${genreId}`);
-            movies = data.results;
-        } else {
-            const { data } = await api.get(`/discover/tv?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&with_genres=${genreId}`);
-            movies = data.results;
-        }
-
+        const { data } = await api.get(`/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&with_genres=${genreId}`);
+        const movies = data.results;
         appendMovies(trendingMoviesArticle, movies);
     } catch (err) {
         console.error(err);
+    }
+}
+async function getSeriesByCategory(genreId) {
+    try {
+        const { data } = await api.get(`/discover/tv?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&with_genres=${genreId}`);
+        const series = data.results;
+
+        appendMovies(trendingMoviesArticle, series)
+    } catch (err) {
+        throw Error(err)
     }
 }
 async function getMoviesAndSeriesBySearch(query) {
@@ -317,4 +320,4 @@ function renderSeriesDetail(serie) {
 
     filmDetailDescription.innerText = serie.overview;
 }
-export {getTrendingPreview, getMoviesGenres, getMoviesOrSeriesByCategory, getMoviesAndSeriesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview, getSeriesGenres, getMovieSectionTrailer, getMovieTrailer, getCastSectionTrailer, getSerieById} 
+export {getTrendingPreview, getMoviesGenres, getMoviesByCategory, getSeriesByCategory, getMoviesAndSeriesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview, getSeriesGenres, getMovieSectionTrailer, getMovieTrailer, getCastSectionTrailer, getSerieById} 
