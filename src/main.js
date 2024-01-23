@@ -7,7 +7,7 @@ const api = axios.create({
     }
 });
 
-
+//1245
 // Utils
 const moviesId = [];
 async function getGenres(genres, apiUrl) {
@@ -64,15 +64,25 @@ function appendMovies(container, movies, related = false, popular = false) {
     while (container.firstChild) {
         container.removeChild(container.firstChild);
     }
+    const moviesModified = isTrendsPreview(container, movies);
     container.scrollLeft = 0;
-    movies.forEach(movie => {
+    moviesModified.forEach(movie => {
         const movieContainer = document.createElement('div');
         movieContainer.classList.add('film');
         if (related) movieContainer.classList.add('relatedFilms--film');
 
+        const screenWidth = window.innerWidth;
+        const screenBreakpoint = 716;
+        let imgWidth;
+        if (screenWidth < screenBreakpoint) {
+            imgWidth = 'w342'
+        } else {
+            imgWidth = 'w500'
+        }
+
         const movieImg = document.createElement('img');
         movieImg.classList.add('film-img');
-        movieImg.src = movie.poster_path ? 'https://image.tmdb.org/t/p/w342' + movie.poster_path : '../assets/missing-photo.png';
+        movieImg.src = movie.poster_path ? 'https://image.tmdb.org/t/p/' + imgWidth + movie.poster_path : '../assets/missing-photo.png';
         movieImg.setAttribute('alt', movie.title);
 
         const movieTitle = document.createElement('h3');
@@ -111,6 +121,22 @@ function appendMovies(container, movies, related = false, popular = false) {
         movieContainer.addEventListener('click', () => location.hash = `#movie=${movie.id}-${title}-${movieMediaType}`)
         container.appendChild(movieContainer);
     });
+}
+function isTrendsPreview(container, movies) {
+    const screenWidth = window.innerWidth;
+    const breakpointForLaptop = 1245;
+    const screenBreakpoint = 716;
+    if (container == trendingMoviesArticle && (location.hash == '#home' || location.hash == '' )) {
+        if (screenWidth < screenBreakpoint) {
+            return movies
+        } else if (screenWidth < breakpointForLaptop) {
+            return movies.slice(0, 10)
+        } else {
+            return movies.slice(0, 12)
+        }
+    } else {
+        return movies
+    }
 }
 
 
@@ -152,16 +178,19 @@ function isDescriptionTooLong(string) {
 
 // Consuming API
 // Home
-async function getMovieHome() {
+async function getMovieHome() { 
     const movieHome = await getRandomMovieOrSeries();
 
     const screenWidth = window.innerWidth;
     const screenBreakpoint = 716;
+    const screenBreakpointDesktop = 980;
     let imgWidth;
     if (screenWidth < screenBreakpoint) {
         imgWidth = 'w780'
-    } else {
+    } else if (screenWidth < screenBreakpointDesktop) {
         imgWidth = 'w1280'
+    } else {
+        imgWidth = 'original'
     }
 
     homeImg.src = 'https://image.tmdb.org/t/p/' + imgWidth + movieHome.backdrop_path;
@@ -188,7 +217,10 @@ async function getPopularPreview() {
 }
 async function getMovieSectionTrailer() {
     const movieTrailer = await getRandomMovieOrSeries();
-    sectionTrailerImg.src = 'https://image.tmdb.org/t/p/w780' + movieTrailer.backdrop_path;
+
+    const imgSize = getImageSize();
+
+    sectionTrailerImg.src = 'https://image.tmdb.org/t/p/' + imgSize + movieTrailer.backdrop_path;
     sectionTrailerTitle.innerText =  movieTrailer.media_type == 'tv' ? movieTrailer.name : movieTrailer.title;
     sectionTrailerDescription.innerText = movieTrailer.overview;
     sectionTrailerRate.innerText = `${movieTrailer.vote_average.toFixed(1)} ⭐`
@@ -199,6 +231,15 @@ async function getMovieSectionTrailer() {
     })
     //
     getCastSectionTrailer(movieTrailer.id, movieTrailer.media_type);
+}
+function getImageSize() {
+    const screenWidth = window.innerWidth;
+    const screenBreakpointDesktop = 980;
+    if (screenWidth < screenBreakpointDesktop) {
+        return 'w780'
+    } else {
+        return 'w1280'
+    }
 }
 async function getMovieTrailer(id, media_type) {
     const {data} = await api.get(`/${media_type}/${id}/videos`);
@@ -214,7 +255,8 @@ async function getCastSectionTrailer(id, media_type) {
     try {
         const {data} = await api.get(`/${media_type}/${id}/credits`);
         const cast = data.cast;
-        const imageUrl = 'https://image.tmdb.org/t/p/w45'
+
+        const imageUrl = 'https://image.tmdb.org/t/p/' + getCastImageSize();
         
         while (sectionTrailerCast.firstChild) {
             sectionTrailerCast.removeChild(sectionTrailerCast.firstChild);
@@ -230,7 +272,15 @@ async function getCastSectionTrailer(id, media_type) {
     } catch (err) {
         console.error(err);
     }
-/* <img src="./assets/actor-avatar.svg" alt="" class="actor-img"> */
+}
+function getCastImageSize() {
+    const screenWidth = window.innerWidth;
+    const screenBreakpointDesktop = 980;
+    if (screenWidth < screenBreakpointDesktop) {
+        return 'w45'
+    } else {
+        return 'w185'
+    }
 }
 
 //Explore
@@ -312,14 +362,7 @@ async function getMovieById(id) {
     }
 }
 function renderMovieDetail(movie) {
-    const screenWidth = window.innerWidth;
-    const screenBreakpoint = 716;
-    let imgDetails;
-    if (screenWidth < screenBreakpoint) {
-        imgDetails = 'w500' + movie.poster_path
-    } else {
-        imgDetails = 'w1280' + movie.backdrop_path
-    }
+    const imgDetails = getDetailImageSize(movie);
     movieDetailImg.style.backgroundImage = `linear-gradient(180deg, rgba(0, 0, 0, 0.35) 19.27%, rgba(0, 0, 0, 0) 29.17%), url('https://image.tmdb.org/t/p/${imgDetails}')`;
     filmDetailTitle.innerText = movie.original_title;
 
@@ -330,6 +373,16 @@ function renderMovieDetail(movie) {
     filmDetailCategories.innerText = movie.genres.map(genre => genre.name).join(' - '); //!PENDIENTE - add click event to each genre
 
     filmDetailDescription.innerText = movie.overview;
+}
+
+function getDetailImageSize(movie) {
+    const screenWidth = window.innerWidth;
+    const screenBreakpoint = 716;
+    if (screenWidth < screenBreakpoint) {
+        return 'w500' + movie.poster_path;
+    } else {
+        return 'w1280' + movie.backdrop_path;
+    }
 }
 
 async function getSerieById(id) {
@@ -343,7 +396,9 @@ async function getSerieById(id) {
     appendMovies(relatedFilms, relatedSeries, true);
 }
 function renderSeriesDetail(serie) {
-    movieDetailImg.style.backgroundImage = `linear-gradient(180deg, rgba(0, 0, 0, 0.35) 19.27%, rgba(0, 0, 0, 0) 29.17%), url('https://image.tmdb.org/t/p/w500${serie.poster_path}')`;
+    const imgDetails = getDetailImageSize(serie);
+
+    movieDetailImg.style.backgroundImage = `linear-gradient(180deg, rgba(0, 0, 0, 0.35) 19.27%, rgba(0, 0, 0, 0) 29.17%), url('https://image.tmdb.org/t/p/${imgDetails}')`;
     filmDetailTitle.innerText = serie.name;
 
     filmDetailScore.innerText = '⭐' + serie.vote_average.toFixed(1);

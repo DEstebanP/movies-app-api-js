@@ -10,17 +10,16 @@
     <link rel="stylesheet" href="./node_modules/normalize.css/normalize.css">
     <link rel="stylesheet" href="./styles/style.css">
     <link rel="stylesheet" href="./styles/tablet.css" media="screen and (min-width: 716px)">
+    <link rel="stylesheet" href="./styles/desktop.css" media="screen and (min-width: 980px)">
     <script src="https://kit.fontawesome.com/7dae4b2213.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <header class="header">
         <img class="header__appLogo" src="./assets/logo.svg" alt="logo">
         <div class="header__right">
-            <form class="searchForm">
-                <input id="searchInputDesktop" class="searchForm__input inactive" type="text">
-                <button type="button" id="search-btn" class="searchForm__btn">
-                    <img class="searchForm__logo logo" src="./assets/search.svg" alt="search"></button>
-            </form>
+            <button type="button" id="search-btn" class="searchForm__btn">
+            <img class="searchForm__logo logo" src="./assets/search.svg" alt="search">
+            </button>
             <img class="header__bell logo" src="./assets/bell-filled.svg" alt="notifications">
             <img src="./assets/user.svg" alt="account" class="header__user logo">
         </div>
@@ -58,7 +57,7 @@
                     <p class="film-rate">⭐</p>
                 </div> -->
             </article>
-            
+            <button id="trendsBtn" class="section-trending__btn section-trending__btn--desktop">See More</button>
         </section>
 
         <section class="section-trailer">
@@ -97,7 +96,7 @@
             <img src="" alt="" class="popular__arrow-right inactive">
         </section>
         <section class="explore">
-            <img class="explore__img" src="./assets/large-image.png" alt="">
+            <img class="explore__img" src="" alt="">
             <h2 class="explore__title">Explore</h2>
             <img class="explore__search" src="./assets/search.svg" alt="">
         </section>
@@ -156,7 +155,7 @@
                 <button id="moviesGenresBtn">Movies</button>
                 <button id="seriesGenresBtn">Series</button>
             </div>
-            <div>
+            <div class="categories__options">
                 <span class="categories__genres">Genres</span>
                 <span>Popular</span>
                 <span>New</span>

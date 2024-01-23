@@ -1,0 +1,157 @@
+.header {
+    height: 100px;
+}
+.header__appLogo {
+    width: 90px;
+}
+.header__right {
+    width: 200px;
+}
+.header__right img{
+    width: 32px;
+}
+
+.section-image {
+    height: 500px;
+}
+.section-image__film-title {
+    font-size: 8rem;
+    max-width: 350px;
+    left: 63%;
+    bottom: 50px;
+}
+
+.section-trending {
+    max-width: 1308px;
+}
+.section-trending__title, .popular__title {
+    font-size: 4.8rem;
+}
+.section-trending__filmList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    max-width: 1308px;
+    width: 100%;
+    height: auto;
+    overflow-x: unset;
+    gap: 20px;
+}
+.section-trending__filmList .film {
+    padding: 0;
+}
+
+.section-trending__btn {
+    display: none;
+}
+.section-trending__btn--desktop {
+    font-size: 1.8rem;
+    display: inline-block;
+    margin: 32px 0 50px;
+    padding: 8px 32px;
+}
+
+.section-trailer__title {
+    font-size: 3.6rem;
+}
+.section-trailer__text {
+    font-size: 1.6rem;
+}
+.section-trailer__play {
+    width: 90px;
+    right: calc(50% - 45px);
+}
+.trailer__video {
+    max-width: 670px;
+    height: 380px;
+}
+
+.film-title--secondary {
+    font-size: 3.6rem;
+}
+.film-description {
+    font-size: 1.6rem;
+    font-weight: 400;
+}
+.actor-img {
+    width: 40px;
+    height: 50px;
+}
+
+.popular__filmList {
+    justify-content: center;
+}
+
+.explore {
+    height: 300px;
+}
+.explore__title {
+    font-size: 7.6rem;
+}
+.explore__search {
+    width: 68px;
+}
+
+.searchForm--explore {
+    margin-top: 20px;
+    margin-bottom: 24px;
+}
+.searchForm__input--explore {
+    font-size: 1.8rem;
+    width: 90%;
+    padding: 12px 8px 12px;
+}
+.searchForm__btn--explore {
+    height: 44.1px;
+    width: 42px;
+}
+
+.categories__title {
+    font-size: 4.8rem;
+    margin-left: 26px;
+}
+.categories__options {
+    margin-left: 18px;
+}
+.categories__options span {
+    font-size: 2rem;
+    
+}
+.categories__btn {
+    font-size: 2rem;
+    margin: 20px 36px 0 0;
+}
+.categories__cards {
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+}
+.categoryCard {
+    max-width: 280px;
+}
+.categoryCard__title {
+    font-size: 3.2rem;
+}
+
+
+.filmDetail__title {
+    font-size: 4.8rem;
+    margin-bottom: 12px;
+}
+.filmDetail__info {
+    font-size: 1.4rem;
+    margin-left: 8px;
+}
+.filmDetail__score {
+    font-size: 2rem;
+    margin-right: 32px;
+}
+.filmDetail__container {
+    margin-top: 525px;
+}
+.filmDetail__trailer {
+    width: 20%;
+}
+.filmDetail__description {
+    width: 65%;
+}
+.relatedFilms--film {
+    min-width: 190px;
+}

@@ -10,6 +10,10 @@
 .section-trailer__content {
     width: 90%;
 }
+.trailer__video {
+    max-width: 500px;
+    height: 300px 
+}
 
 .explore__img {
     object-position: top;

@@ -38,14 +38,10 @@ Node.filmDetailTrailer.addEventListener('click', () => {
     getMovieTrailer(id, media_type);
     Node.trailerPlayer.classList.remove('inactive');
 })
+Node.sectionExplore.addEventListener('click', () => location.hash = '#explore=movies');
 
-function adjustActionAccordingToScreen() {
-    const screenWidth = window.innerWidth;
-    if(screenWidth) {
-        console.log(screenWidth);
-        Node.exploreBtn.addEventListener('click', () => location.hash = '#explore=movies')
-    }
-}
+Node.exploreBtn.addEventListener('click', () => location.hash = '#explore=movies');
+
 // Change between movies and series genres
 Node.moviesGenresBtn.addEventListener('click', styleExploreMoviesBtn);
 function styleExploreMoviesBtn() {
@@ -67,8 +63,6 @@ function styleExploreSeriesBtn() {
     Node.moviesGenresBtn.style.color = '#F1EEF5';
 }
 
-window.addEventListener('load', adjustActionAccordingToScreen);
-window.addEventListener('resize', adjustActionAccordingToScreen);
 
 function smoothScroll() {
     const currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
