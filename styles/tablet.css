@@ -1,0 +1,33 @@
+.section-image {
+    height: 350px;
+}
+.section-trailer {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    align-items: center;
+    margin-bottom: 40px;
+}
+.section-trailer__content {
+    width: 90%;
+}
+
+.explore__img {
+    object-position: top;
+}
+
+.film--secondary {
+    min-width: 200px;
+}
+
+.categories__cards {
+    grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+    padding: 0 16px;
+}
+
+.section-trending__filmList--categories {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
+
+.inactive {
+    display: none;
+}

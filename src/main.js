@@ -30,10 +30,19 @@ async function getGenres(genres, apiUrl) {
         }
         const categoryCard = document.createElement('div');
         categoryCard.classList.add('categoryCard');
+
+        const screenWidth = window.innerWidth;
+        const screenBreakpoint = 716;
+        let imgWidth;
+        if (screenWidth < screenBreakpoint) {
+            imgWidth = 'w342'
+        } else {
+            imgWidth = 'w500'
+        }
         
         const cardImg = document.createElement('img');
         cardImg.classList.add('categoryCard__img');
-        cardImg.src = 'https://image.tmdb.org/t/p/w300' + categoryImg;
+        cardImg.src = 'https://image.tmdb.org/t/p/' + imgWidth + categoryImg;
         if (!categoryImg) cardImg.src = "../assets/missing-photo.png";
         cardImg.setAttribute('alt', genre.name);
         
@@ -59,11 +68,11 @@ function appendMovies(container, movies, related = false, popular = false) {
     movies.forEach(movie => {
         const movieContainer = document.createElement('div');
         movieContainer.classList.add('film');
-        if (related) movieContainer.classList.add('relatedFilms--film'); 
+        if (related) movieContainer.classList.add('relatedFilms--film');
 
         const movieImg = document.createElement('img');
         movieImg.classList.add('film-img');
-        movieImg.src = movie.poster_path ? 'https://image.tmdb.org/t/p/w300' + movie.poster_path : '../assets/missing-photo.png';
+        movieImg.src = movie.poster_path ? 'https://image.tmdb.org/t/p/w342' + movie.poster_path : '../assets/missing-photo.png';
         movieImg.setAttribute('alt', movie.title);
 
         const movieTitle = document.createElement('h3');
@@ -145,13 +154,23 @@ function isDescriptionTooLong(string) {
 // Home
 async function getMovieHome() {
     const movieHome = await getRandomMovieOrSeries();
-    homeImg.src = 'https://image.tmdb.org/t/p/w780' + movieHome.backdrop_path;
+
+    const screenWidth = window.innerWidth;
+    const screenBreakpoint = 716;
+    let imgWidth;
+    if (screenWidth < screenBreakpoint) {
+        imgWidth = 'w780'
+    } else {
+        imgWidth = 'w1280'
+    }
+
+    homeImg.src = 'https://image.tmdb.org/t/p/' + imgWidth + movieHome.backdrop_path;
     homeImgTitle.innerText = movieHome.media_type == 'tv' ? movieHome.name : movieHome.title ;
     const { title, movieMediaType }= identifyMediaType(movieHome);
     homeSectionImg.addEventListener('click', () => location.hash = `#movie=${movieHome.id}-${title}-${movieMediaType}`)
     //Image of the explore section
     const movieExplore = await getRandomMovieOrSeries();
-    homeExploreImg.src = 'https://image.tmdb.org/t/p/w780' +movieExplore.backdrop_path;
+    homeExploreImg.src = 'https://image.tmdb.org/t/p/' + imgWidth + movieExplore.backdrop_path;
 }
 async function getTrendingPreview() {
     const {data} = await api.get('/trending/movie/day');
@@ -293,7 +312,15 @@ async function getMovieById(id) {
     }
 }
 function renderMovieDetail(movie) {
-    movieDetailImg.style.backgroundImage = `linear-gradient(180deg, rgba(0, 0, 0, 0.35) 19.27%, rgba(0, 0, 0, 0) 29.17%), url('https://image.tmdb.org/t/p/w500${movie.poster_path}')`;
+    const screenWidth = window.innerWidth;
+    const screenBreakpoint = 716;
+    let imgDetails;
+    if (screenWidth < screenBreakpoint) {
+        imgDetails = 'w500' + movie.poster_path
+    } else {
+        imgDetails = 'w1280' + movie.backdrop_path
+    }
+    movieDetailImg.style.backgroundImage = `linear-gradient(180deg, rgba(0, 0, 0, 0.35) 19.27%, rgba(0, 0, 0, 0) 29.17%), url('https://image.tmdb.org/t/p/${imgDetails}')`;
     filmDetailTitle.innerText = movie.original_title;
 
     filmDetailScore.innerText = '⭐' + movie.vote_average.toFixed(1);
