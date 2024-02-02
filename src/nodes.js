@@ -17,7 +17,7 @@ export const searchFormExplore = document.querySelector('.searchResults .searchF
 export const filmDetailContainer = document.querySelector('.filmDetail__container >div');
 export const relatedFilms = document.querySelector('#relatedFilms');
 export const popularFilmList = document.querySelector('.popular__filmList');
-
+export const loadingContainer = document.querySelector('.loading-films');
 
 //Elements
 export const exploreBtn = document.getElementById('search-btn');

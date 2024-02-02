@@ -1,5 +1,6 @@
 import { API_KEY, API_KEY_TOKEN } from "./secrets.mjs";
-import { categoriesCards, filmDetailContainer, trendingMoviesArticle, movieDetailImg, relatedFilms, filmDetailTitle, filmDetailScore, filmDetailDuration, filmDetailRelease, filmDetailCategories, filmDetailDescription, homeImg, homeImgTitle, popularFilmList, homeExploreImg, moviesGenresBtn, sectionTrailerImg, sectionTrailerTitle, sectionTrailerDescription, sectionTrailerVideo, trailerVideo, trailerPlayer, sectionTrailer, sectionTrailerCast, filmDetailSubtitle, sectionTrailerRate, homeSectionImg} from "./nodes.js";
+import * as Node from "./nodes.js";
+
 const api = axios.create({
     baseURL: 'https://api.themoviedb.org/3',
     headers: {
@@ -12,8 +13,8 @@ const api = axios.create({
 const moviesId = [];
 async function getGenres(genres, apiUrl) {
     moviesId.splice(0);
-    while (categoriesCards.firstChild) {
-        categoriesCards.removeChild(categoriesCards.firstChild);
+    while (Node.categoriesCards.firstChild) {
+        Node.categoriesCards.removeChild(Node.categoriesCards.firstChild);
     }
     for (const genre of genres) {
         const {data} = await api.get(`${apiUrl}${genre.id}`);
@@ -56,7 +57,7 @@ async function getGenres(genres, apiUrl) {
             const [_ , mediaType] = location.hash.split('=')
             location.hash = `#category=${genre.id}-${genre.name}-${mediaType}`;
         })
-        categoriesCards.appendChild(categoryCard);
+        Node.categoriesCards.appendChild(categoryCard);
     }
     
 }
@@ -121,12 +122,17 @@ function appendMovies(container, movies, related = false, popular = false) {
         movieContainer.addEventListener('click', () => location.hash = `#movie=${movie.id}-${title}-${movieMediaType}`)
         container.appendChild(movieContainer);
     });
+    toogleLoadingSkeleton()
+}
+function toogleLoadingSkeleton() {
+    Node.loadingContainer.classList.add('inactive');
+    Node.trendingMoviesArticle.classList.remove('inactive');
 }
 function isTrendsPreview(container, movies) {
     const screenWidth = window.innerWidth;
     const breakpointForLaptop = 1245;
     const screenBreakpoint = 716;
-    if (container == trendingMoviesArticle && (location.hash == '#home' || location.hash == '' )) {
+    if (container == Node.trendingMoviesArticle && (location.hash == '#home' || location.hash == '' )) {
         if (screenWidth < screenBreakpoint) {
             return movies
         } else if (screenWidth < breakpointForLaptop) {
@@ -193,41 +199,41 @@ async function getMovieHome() {
         imgWidth = 'original'
     }
 
-    homeImg.src = 'https://image.tmdb.org/t/p/' + imgWidth + movieHome.backdrop_path;
-    homeImgTitle.innerText = movieHome.media_type == 'tv' ? movieHome.name : movieHome.title ;
+    Node.homeImg.src = 'https://image.tmdb.org/t/p/' + imgWidth + movieHome.backdrop_path;
+    Node.homeImgTitle.innerText = movieHome.media_type == 'tv' ? movieHome.name : movieHome.title ;
     const { title, movieMediaType }= identifyMediaType(movieHome);
-    homeSectionImg.addEventListener('click', () => location.hash = `#movie=${movieHome.id}-${title}-${movieMediaType}`)
+    Node.homeSectionImg.addEventListener('click', () => location.hash = `#movie=${movieHome.id}-${title}-${movieMediaType}`)
     //Image of the explore section
     const movieExplore = await getRandomMovieOrSeries();
-    homeExploreImg.src = 'https://image.tmdb.org/t/p/' + imgWidth + movieExplore.backdrop_path;
+    Node.homeExploreImg.src = 'https://image.tmdb.org/t/p/' + imgWidth + movieExplore.backdrop_path;
 }
 async function getTrendingPreview() {
     const {data} = await api.get('/trending/movie/day');
 
     const movies = data.results;
-    appendMovies(trendingMoviesArticle, movies);
+    appendMovies(Node.trendingMoviesArticle, movies);
 }
 async function getPopularPreview() {
     const {data} = await api.get('/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc');
 
     const movies = data.results;
     movies.splice(3);
-    popularFilmList.scrollLeft = 0;
-    appendMovies(popularFilmList, movies, false, true);
+    Node.popularFilmList.scrollLeft = 0;
+    appendMovies(Node.popularFilmList, movies, false, true);
 }
 async function getMovieSectionTrailer() {
     const movieTrailer = await getRandomMovieOrSeries();
 
     const imgSize = getImageSize();
 
-    sectionTrailerImg.src = 'https://image.tmdb.org/t/p/' + imgSize + movieTrailer.backdrop_path;
-    sectionTrailerTitle.innerText =  movieTrailer.media_type == 'tv' ? movieTrailer.name : movieTrailer.title;
-    sectionTrailerDescription.innerText = movieTrailer.overview;
-    sectionTrailerRate.innerText = `${movieTrailer.vote_average.toFixed(1)} ⭐`
+    Node.sectionTrailerImg.src = 'https://image.tmdb.org/t/p/' + imgSize + movieTrailer.backdrop_path;
+    Node.sectionTrailerTitle.innerText =  movieTrailer.media_type == 'tv' ? movieTrailer.name : movieTrailer.title;
+    Node.sectionTrailerDescription.innerText = movieTrailer.overview;
+    Node.sectionTrailerRate.innerText = `${movieTrailer.vote_average.toFixed(1)} ⭐`
     //
-    sectionTrailerVideo.addEventListener('click', () => {
+    Node.sectionTrailerVideo.addEventListener('click', () => {
         getMovieTrailer(movieTrailer.id, movieTrailer.media_type);
-        trailerPlayer.classList.remove('inactive');
+        Node.TrailerPlayer.classList.remove('inactive');
     })
     //
     getCastSectionTrailer(movieTrailer.id, movieTrailer.media_type);
@@ -246,7 +252,7 @@ async function getMovieTrailer(id, media_type) {
     const videos = data.results;
     for (const video of videos) {
         if (video.type == 'Trailer') {
-            trailerVideo.src = `https://www.youtube.com/embed/${video.key}`
+            Node.TrailerVideo.src = `https://www.youtube.com/embed/${video.key}`
             return
         }
     }
@@ -258,8 +264,8 @@ async function getCastSectionTrailer(id, media_type) {
 
         const imageUrl = 'https://image.tmdb.org/t/p/' + getCastImageSize();
         
-        while (sectionTrailerCast.firstChild) {
-            sectionTrailerCast.removeChild(sectionTrailerCast.firstChild);
+        while (Node.sectionTrailerCast.firstChild) {
+            Node.sectionTrailerCast.removeChild(Node.sectionTrailerCast.firstChild);
         }
         const firstSixElementsCast = cast.slice(0,6);
         for (let i = 0; i <= firstSixElementsCast.length; i++) {
@@ -267,7 +273,7 @@ async function getCastSectionTrailer(id, media_type) {
             actorImg.classList.add('actor-img');
             actorImg.src = `${imageUrl}${cast[i].profile_path}`;
             
-            sectionTrailerCast.appendChild(actorImg);
+            Node.sectionTrailerCast.appendChild(actorImg);
         }
     } catch (err) {
         console.error(err);
@@ -310,7 +316,7 @@ async function getMoviesByCategory(genreId) {
     try {
         const { data } = await api.get(`/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&with_genres=${genreId}`);
         const movies = data.results;
-        appendMovies(trendingMoviesArticle, movies);
+        appendMovies(Node.trendingMoviesArticle, movies);
     } catch (err) {
         console.error(err);
     }
@@ -320,7 +326,7 @@ async function getSeriesByCategory(genreId) {
         const { data } = await api.get(`/discover/tv?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&with_genres=${genreId}`);
         const series = data.results;
 
-        appendMovies(trendingMoviesArticle, series)
+        appendMovies(Node.trendingMoviesArticle, series)
     } catch (err) {
         throw Error(err)
     }
@@ -335,17 +341,17 @@ async function getMoviesAndSeriesBySearch(query) {
         });
         const multiResults = data.results;
         const multiResultsCleaned = multiResults.filter(element => element.media_type !== 'person');
-        appendMovies(trendingMoviesArticle, multiResultsCleaned);
+        appendMovies(Node.trendingMoviesArticle, multiResultsCleaned);
     } catch (err) {
         console.error(err);
     }
 }
 async function getTrends() {
-    const {data} = await api.get('/trending/movie/day');
+    const {data} = await api.get('/trending/movie/week');
     console.log(data);
 
     const movies = data.results;
-    appendMovies(trendingMoviesArticle, movies);
+    appendMovies(Node.trendingMoviesArticle, movies);
 }
 
 async function getMovieById(id) {
@@ -356,23 +362,23 @@ async function getMovieById(id) {
         //Related movies
         const { data } = await api.get(`/movie/${id}/similar`);
         const relatedMovies = data.results;
-        appendMovies(relatedFilms, relatedMovies, true);
+        appendMovies(Node.relatedFilms, relatedMovies, true);
     } catch (err) {
         console.error(err);
     }
 }
 function renderMovieDetail(movie) {
     const imgDetails = getDetailImageSize(movie);
-    movieDetailImg.style.backgroundImage = `linear-gradient(180deg, rgba(0, 0, 0, 0.35) 19.27%, rgba(0, 0, 0, 0) 29.17%), url('https://image.tmdb.org/t/p/${imgDetails}')`;
-    filmDetailTitle.innerText = movie.original_title;
+    Node.movieDetailImg.style.backgroundImage = `linear-gradient(180deg, rgba(0, 0, 0, 0.35) 19.27%, rgba(0, 0, 0, 0) 29.17%), url('https://image.tmdb.org/t/p/${imgDetails}')`;
+    Node.filmDetailTitle.innerText = movie.original_title;
 
-    filmDetailScore.innerText = '⭐' + movie.vote_average.toFixed(1);
+    Node.filmDetailScore.innerText = '⭐' + movie.vote_average.toFixed(1);
 
-    filmDetailDuration.innerText = movie.runtime; //! PENDIENTE
-    filmDetailRelease.innerText = movie.release_date; //! PENDIENTE
-    filmDetailCategories.innerText = movie.genres.map(genre => genre.name).join(' - '); //!PENDIENTE - add click event to each genre
+    Node.filmDetailDuration.innerText = movie.runtime; //! PENDIENTE
+    Node.filmDetailRelease.innerText = movie.release_date; //! PENDIENTE
+    Node.filmDetailCategories.innerText = movie.genres.map(genre => genre.name).join(' - '); //!PENDIENTE - add click event to each genre
 
-    filmDetailDescription.innerText = movie.overview;
+    Node.filmDetailDescription.innerText = movie.overview;
 }
 
 function getDetailImageSize(movie) {
@@ -392,21 +398,21 @@ async function getSerieById(id) {
     //Related series
     const { data } = await api.get(`/tv/${id}/similar`);
     const relatedSeries = data.results;
-    filmDetailSubtitle.innerText = 'Similar Series'
-    appendMovies(relatedFilms, relatedSeries, true);
+    Node.filmDetailSubtitle.innerText = 'Similar Series'
+    appendMovies(Node.relatedFilms, relatedSeries, true);
 }
 function renderSeriesDetail(serie) {
     const imgDetails = getDetailImageSize(serie);
 
-    movieDetailImg.style.backgroundImage = `linear-gradient(180deg, rgba(0, 0, 0, 0.35) 19.27%, rgba(0, 0, 0, 0) 29.17%), url('https://image.tmdb.org/t/p/${imgDetails}')`;
-    filmDetailTitle.innerText = serie.name;
+    Node.movieDetailImg.style.backgroundImage = `linear-gradient(180deg, rgba(0, 0, 0, 0.35) 19.27%, rgba(0, 0, 0, 0) 29.17%), url('https://image.tmdb.org/t/p/${imgDetails}')`;
+    Node.filmDetailTitle.innerText = serie.name;
 
-    filmDetailScore.innerText = '⭐' + serie.vote_average.toFixed(1);
+    Node.filmDetailScore.innerText = '⭐' + serie.vote_average.toFixed(1);
     const season = serie.number_of_seasons < 2 ? 'SEASON' : 'SEASONS'
-    filmDetailDuration.innerText = serie.number_of_seasons +' '+ season; //! PENDIENTE
-    filmDetailRelease.innerText = serie.first_air_date; //! PENDIENTE
-    filmDetailCategories.innerText = serie.genres.map(genre => genre.name).join(' - '); //!PENDIENTE - add click event to each genre
+    Node.filmDetailDuration.innerText = serie.number_of_seasons +' '+ season; //! PENDIENTE
+    Node.filmDetailRelease.innerText = serie.first_air_date; //! PENDIENTE
+    Node.filmDetailCategories.innerText = serie.genres.map(genre => genre.name).join(' - '); //!PENDIENTE - add click event to each genre
 
-    filmDetailDescription.innerText = serie.overview;
+    Node.filmDetailDescription.innerText = serie.overview;
 }
 export {getTrendingPreview, getMoviesGenres, getMoviesByCategory, getSeriesByCategory, getMoviesAndSeriesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview, getSeriesGenres, getMovieSectionTrailer, getMovieTrailer, getCastSectionTrailer, getSerieById} 
