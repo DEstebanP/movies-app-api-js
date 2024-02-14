@@ -122,18 +122,13 @@ function appendMovies(container, movies, related = false, popular = false) {
         movieContainer.addEventListener('click', () => location.hash = `#movie=${movie.id}-${title}-${movieMediaType}`)
         container.appendChild(movieContainer);
     });
-    toogleLoadingSkeleton()
-}
-function toogleLoadingSkeleton() {
-    Node.loadingContainer.classList.add('inactive');
-    Node.trendingMoviesArticle.classList.remove('inactive');
 }
 function isTrendsPreview(container, movies) {
     const screenWidth = window.innerWidth;
     const breakpointForLaptop = 1245;
-    const screenBreakpoint = 716;
+    const breakpointForTablet = 980;
     if (container == Node.trendingMoviesArticle && (location.hash == '#home' || location.hash == '' )) {
-        if (screenWidth < screenBreakpoint) {
+        if (screenWidth < breakpointForTablet) {
             return movies
         } else if (screenWidth < breakpointForLaptop) {
             return movies.slice(0, 10)
@@ -233,7 +228,7 @@ async function getMovieSectionTrailer() {
     //
     Node.sectionTrailerVideo.addEventListener('click', () => {
         getMovieTrailer(movieTrailer.id, movieTrailer.media_type);
-        Node.TrailerPlayer.classList.remove('inactive');
+        Node.trailerPlayer.classList.remove('inactive');
     })
     //
     getCastSectionTrailer(movieTrailer.id, movieTrailer.media_type);
@@ -252,7 +247,7 @@ async function getMovieTrailer(id, media_type) {
     const videos = data.results;
     for (const video of videos) {
         if (video.type == 'Trailer') {
-            Node.TrailerVideo.src = `https://www.youtube.com/embed/${video.key}`
+            Node.trailerVideo.src = `https://www.youtube.com/embed/${video.key}`
             return
         }
     }
