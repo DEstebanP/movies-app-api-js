@@ -220,7 +220,7 @@ async function getMovieSectionTrailer() {
 
     const imgSize = getImageSize();
 
-    sectionTrailerImg.src = 'https://image.tmdb.org/t/p/' + imgSize + movieTrailer.backdrop_path;
+    sectionTrailerImg.setAttribute('data-src', 'https://image.tmdb.org/t/p/' + imgSize + movieTrailer.backdrop_path);
     sectionTrailerTitle.innerText =  movieTrailer.media_type == 'tv' ? movieTrailer.name : movieTrailer.title;
     sectionTrailerDescription.innerText = movieTrailer.overview;
     sectionTrailerRate.innerText = `${movieTrailer.vote_average.toFixed(1)} ⭐`
@@ -265,10 +265,12 @@ async function getCastSectionTrailer(id, media_type) {
         for (let i = 0; i <= firstSixElementsCast.length; i++) {
             const actorImg = document.createElement('img');
             actorImg.classList.add('actor-img');
-            actorImg.src = `${imageUrl}${cast[i].profile_path}`;
+            actorImg.setAttribute('data-src', `${imageUrl}${cast[i].profile_path}`);
             
             sectionTrailerCast.appendChild(actorImg);
         }
+        return
+        console.log('render');
     } catch (err) {
         console.error(err);
     }
@@ -409,4 +411,53 @@ function renderSeriesDetail(serie) {
 
     filmDetailDescription.innerText = serie.overview;
 }
-export {getTrendingPreview, getMoviesGenres, getMoviesByCategory, getSeriesByCategory, getMoviesAndSeriesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview, getSeriesGenres, getMovieSectionTrailer, getMovieTrailer, getCastSectionTrailer, getSerieById} 
+
+//Lazy loading
+
+function creatingObserver() {
+    const observer = new IntersectionObserver(handleIntersect);
+    getObservedElements().then(observeElements => {
+        observeElements.forEach(element => observer.observe(element));
+    })
+}
+async function getObservedElements() {
+    const observeElements = [sectionTrailerImg];
+    const actorElements = await waitForElement(".actor-img", sectionTrailerCast);
+    document.querySelectorAll('.actor-img').forEach(element => observeElements.push(element));
+    console.log(observeElements);
+    return observeElements;
+
+}
+function handleIntersect(entries, observer) {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.src = entry.target.dataset.src;
+        }
+    })
+}
+
+function waitForElement(selector, container) {
+    return new Promise( resolve => {
+        const element = document.querySelector(selector);
+        if (element) {
+            resolve(element)
+            return
+        }
+
+        const observer = new MutationObserver((mutations, observer) => {
+            const element = document.querySelector(selector);
+            if (element) {
+                resolve(element);
+                observer.disconnect();
+            }
+        });
+
+        observer.observe(container, {
+            childList: true,
+            subtree: true
+        })
+        return
+    }) 
+}
+
+export {getTrendingPreview, getMoviesGenres, getMoviesByCategory, getSeriesByCategory, getMoviesAndSeriesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview, getSeriesGenres, getMovieSectionTrailer, getMovieTrailer, getCastSectionTrailer, getSerieById, creatingObserver} 
