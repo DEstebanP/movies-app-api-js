@@ -82,7 +82,7 @@ function appendMovies(container, movies, related = false, popular = false) {
 
         const movieImg = document.createElement('img');
         movieImg.classList.add('film-img');
-        movieImg.src = movie.poster_path ? 'https://image.tmdb.org/t/p/' + imgWidth + movie.poster_path : '../assets/missing-photo.png';
+        movieImg.setAttribute("data-src", movie.poster_path ? 'https://image.tmdb.org/t/p/' + imgWidth + movie.poster_path : '../assets/missing-photo.png');
         movieImg.setAttribute('alt', movie.title);
 
         const movieTitle = document.createElement('h3');
@@ -423,7 +423,10 @@ function creatingObserver() {
 async function getObservedElements() {
     const observeElements = [sectionTrailerImg];
     const actorElements = await waitForElement(".actor-img", sectionTrailerCast);
-    document.querySelectorAll('.actor-img').forEach(element => observeElements.push(element));
+    actorElements.forEach(element => observeElements.push(element));
+
+    const movieImgs = await waitForElement(".film-img", trendingMoviesArticle)
+    movieImgs.forEach(element => observeElements.push(element));
     console.log(observeElements);
     return observeElements;
 
@@ -431,6 +434,7 @@ async function getObservedElements() {
 function handleIntersect(entries, observer) {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
+            console.log(entry.isIntersecting);
             entry.target.src = entry.target.dataset.src;
         }
     })
@@ -438,16 +442,16 @@ function handleIntersect(entries, observer) {
 
 function waitForElement(selector, container) {
     return new Promise( resolve => {
-        const element = document.querySelector(selector);
-        if (element) {
-            resolve(element)
+        const elements = document.querySelectorAll(selector);
+        if (elements.length) {
+            resolve(elements)
             return
         }
 
         const observer = new MutationObserver((mutations, observer) => {
-            const element = document.querySelector(selector);
-            if (element) {
-                resolve(element);
+            const elements = document.querySelectorAll(selector);
+            if (elements.length) {
+                resolve(elements);
                 observer.disconnect();
             }
         });
