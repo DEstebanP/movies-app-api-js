@@ -9,6 +9,18 @@ const api = axios.create({
 
 //1245
 // Utils
+//Lazy loading
+const observer = new IntersectionObserver(handleIntersect);
+observer.observe(sectionTrailerImg)
+
+function handleIntersect(entries, observer) {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            console.log(entry.isIntersecting);
+            entry.target.src = entry.target.dataset.src;
+        }
+    })
+}
 const moviesId = [];
 async function getGenres(genres, apiUrl) {
     moviesId.splice(0);
@@ -42,7 +54,7 @@ async function getGenres(genres, apiUrl) {
         
         const cardImg = document.createElement('img');
         cardImg.classList.add('categoryCard__img');
-        cardImg.src = 'https://image.tmdb.org/t/p/' + imgWidth + categoryImg;
+        cardImg.setAttribute('data-src','https://image.tmdb.org/t/p/' + imgWidth + categoryImg);
         if (!categoryImg) cardImg.src = "../assets/missing-photo.png";
         cardImg.setAttribute('alt', genre.name);
         
@@ -56,6 +68,8 @@ async function getGenres(genres, apiUrl) {
             const [_ , mediaType] = location.hash.split('=')
             location.hash = `#category=${genre.id}-${genre.name}-${mediaType}`;
         })
+
+        observer.observe(cardImg)
         categoriesCards.appendChild(categoryCard);
     }
     
@@ -82,7 +96,19 @@ function appendMovies(container, movies, related = false, popular = false) {
 
         const movieImg = document.createElement('img');
         movieImg.classList.add('film-img');
-        movieImg.setAttribute("data-src", movie.poster_path ? 'https://image.tmdb.org/t/p/' + imgWidth + movie.poster_path : '../assets/missing-photo.png');
+        if (movie.poster_path) {
+            movieImg.setAttribute("data-src", 'https://image.tmdb.org/t/p/' + imgWidth + movie.poster_path);
+        } else {
+            console.log(movie);
+            movieImg.setAttribute('data-src', '../assets/missing-photo.png')
+            const movieTitleImg = document.createElement('span');
+            movieTitleImg.innerText = movie.name;
+            movieTitleImg.style.position = 'absolute';
+            movieTitleImg.style.top = '50%';
+            movieTitleImg.style.color = 'black';
+            movieTitleImg.style.textAlign = 'center'
+            movieContainer.appendChild(movieTitleImg)
+        }
         movieImg.setAttribute('alt', movie.title);
 
         const movieTitle = document.createElement('h3');
@@ -117,6 +143,7 @@ function appendMovies(container, movies, related = false, popular = false) {
         } else {
             movieContainer.append(movieImg, movieTitle, movieYear, movieRate);
         }
+        observer.observe(movieImg);
         const { title, movieMediaType } = identifyMediaType(movie);
         movieContainer.addEventListener('click', () => location.hash = `#movie=${movie.id}-${title}-${movieMediaType}`)
         container.appendChild(movieContainer);
@@ -267,6 +294,7 @@ async function getCastSectionTrailer(id, media_type) {
             actorImg.classList.add('actor-img');
             actorImg.setAttribute('data-src', `${imageUrl}${cast[i].profile_path}`);
             
+            observer.observe(actorImg)
             sectionTrailerCast.appendChild(actorImg);
         }
         return
@@ -412,56 +440,8 @@ function renderSeriesDetail(serie) {
     filmDetailDescription.innerText = serie.overview;
 }
 
-//Lazy loading
 
-function creatingObserver() {
-    const observer = new IntersectionObserver(handleIntersect);
-    getObservedElements().then(observeElements => {
-        observeElements.forEach(element => observer.observe(element));
-    })
-}
-async function getObservedElements() {
-    const observeElements = [sectionTrailerImg];
-    const actorElements = await waitForElement(".actor-img", sectionTrailerCast);
-    actorElements.forEach(element => observeElements.push(element));
 
-    const movieImgs = await waitForElement(".film-img", trendingMoviesArticle)
-    movieImgs.forEach(element => observeElements.push(element));
-    console.log(observeElements);
-    return observeElements;
 
-}
-function handleIntersect(entries, observer) {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            console.log(entry.isIntersecting);
-            entry.target.src = entry.target.dataset.src;
-        }
-    })
-}
 
-function waitForElement(selector, container) {
-    return new Promise( resolve => {
-        const elements = document.querySelectorAll(selector);
-        if (elements.length) {
-            resolve(elements)
-            return
-        }
-
-        const observer = new MutationObserver((mutations, observer) => {
-            const elements = document.querySelectorAll(selector);
-            if (elements.length) {
-                resolve(elements);
-                observer.disconnect();
-            }
-        });
-
-        observer.observe(container, {
-            childList: true,
-            subtree: true
-        })
-        return
-    }) 
-}
-
-export {getTrendingPreview, getMoviesGenres, getMoviesByCategory, getSeriesByCategory, getMoviesAndSeriesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview, getSeriesGenres, getMovieSectionTrailer, getMovieTrailer, getCastSectionTrailer, getSerieById, creatingObserver} 
+export {getTrendingPreview, getMoviesGenres, getMoviesByCategory, getSeriesByCategory, getMoviesAndSeriesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview, getSeriesGenres, getMovieSectionTrailer, getMovieTrailer, getCastSectionTrailer, getSerieById} 

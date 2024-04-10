@@ -114,6 +114,7 @@ h1, h2, h3, p {
     width: 100%;
 }
 .film {
+    position: relative;
     display: grid;
     align-items: center;
     grid-template-areas:

@@ -1,4 +1,4 @@
-import { getTrendingPreview, getMoviesGenres, getMoviesByCategory, getSeriesByCategory, getMoviesAndSeriesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview, getSeriesGenres, getMovieSectionTrailer, getCastSectionTrailer, getSerieById, getMovieTrailer, creatingObserver } from "./main.js";
+import { getTrendingPreview, getMoviesGenres, getMoviesByCategory, getSeriesByCategory, getMoviesAndSeriesBySearch, getTrends, getMovieById, getMovieHome, getPopularPreview, getSeriesGenres, getMovieSectionTrailer, getCastSectionTrailer, getSerieById, getMovieTrailer} from "./main.js";
 import * as Node from "./nodes.js";
 
 // Add event listener
@@ -86,7 +86,6 @@ function navigator() {
     } else {
     homePage();
     }
-    creatingObserver();
 }
 
 
