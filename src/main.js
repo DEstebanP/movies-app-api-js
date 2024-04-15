@@ -1,5 +1,5 @@
 import { API_KEY, API_KEY_TOKEN } from "./secrets.mjs";
-import { categoriesCards, filmDetailContainer, trendingMoviesArticle, movieDetailImg, relatedFilms, filmDetailTitle, filmDetailScore, filmDetailDuration, filmDetailRelease, filmDetailCategories, filmDetailDescription, homeImg, homeImgTitle, popularFilmList, homeExploreImg, moviesGenresBtn, sectionTrailerImg, sectionTrailerTitle, sectionTrailerDescription, sectionTrailerVideo, trailerVideo, trailerPlayer, sectionTrailer, sectionTrailerCast, filmDetailSubtitle, sectionTrailerRate, homeSectionImg} from "./nodes.js";
+import { categoriesCards, filmDetailContainer, trendingMoviesArticle, movieDetailImg, relatedFilms, filmDetailTitle, filmDetailScore, filmDetailDuration, filmDetailRelease, filmDetailCategories, filmDetailDescription, homeImg, homeImgTitle, popularFilmList, homeExploreImg, moviesGenresBtn, sectionTrailerImg, sectionTrailerTitle, sectionTrailerDescription, sectionTrailerVideo, trailerVideo, trailerPlayer, sectionTrailer, sectionTrailerCast, filmDetailSubtitle, sectionTrailerRate, homeSectionImg, sectionTrending} from "./nodes.js";
 const api = axios.create({
     baseURL: 'https://api.themoviedb.org/3',
     headers: {
@@ -60,9 +60,11 @@ async function getGenres(genres, apiUrl) {
     }
     
 }
-function appendMovies(container, movies, related = false, popular = false) {
-    while (container.firstChild) {
-        container.removeChild(container.firstChild);
+function appendMovies(container, movies, {related = false, popular = false, clean = true} = {}) {
+    if (clean) {
+        while (container.firstChild) {
+            container.removeChild(container.firstChild);
+        }
     }
     const moviesModified = isTrendsPreview(container, movies);
     container.scrollLeft = 0;
@@ -213,7 +215,7 @@ async function getPopularPreview() {
     const movies = data.results;
     movies.splice(3);
     popularFilmList.scrollLeft = 0;
-    appendMovies(popularFilmList, movies, false, true);
+    appendMovies(popularFilmList, movies, {popular: true});
 }
 async function getMovieSectionTrailer() {
     const movieTrailer = await getRandomMovieOrSeries();
@@ -340,14 +342,32 @@ async function getMoviesAndSeriesBySearch(query) {
         console.error(err);
     }
 }
+
 async function getTrends() {
     const {data} = await api.get('/trending/movie/day');
-    console.log(data);
 
     const movies = data.results;
     appendMovies(trendingMoviesArticle, movies);
 }
+const btnLoadPage = document.createElement('btn');
+btnLoadPage.classList.add('section-trending__btn');
+btnLoadPage.innerText = 'See More'
+sectionTrending.appendChild(btnLoadPage);
 
+btnLoadPage.addEventListener('click', getTrendsPage)
+
+let trendsPage = 1;
+async function getTrendsPage() {
+    trendsPage++
+    const {data} = await api.get('/trending/movie/day', {
+        params: {
+            page: trendsPage
+        }
+    });
+
+    const movies = data.results;
+    appendMovies(trendingMoviesArticle, movies, {clean: false});
+}
 async function getMovieById(id) {
     try {
         const { data: movie } = await api.get(`/movie/${id}`);
@@ -356,7 +376,7 @@ async function getMovieById(id) {
         //Related movies
         const { data } = await api.get(`/movie/${id}/similar`);
         const relatedMovies = data.results;
-        appendMovies(relatedFilms, relatedMovies, true);
+        appendMovies(relatedFilms, relatedMovies, {related: true});
     } catch (err) {
         console.error(err);
     }
@@ -393,7 +413,7 @@ async function getSerieById(id) {
     const { data } = await api.get(`/tv/${id}/similar`);
     const relatedSeries = data.results;
     filmDetailSubtitle.innerText = 'Similar Series'
-    appendMovies(relatedFilms, relatedSeries, true);
+    appendMovies(relatedFilms, relatedSeries, {related: true});
 }
 function renderSeriesDetail(serie) {
     const imgDetails = getDetailImageSize(serie);
