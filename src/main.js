@@ -308,66 +308,72 @@ async function getSeriesGenres() {
         console.error(err)
     }
 }  
-async function getMoviesByCategory(genreId) {
+async function getMoviesByCategory(genreId, {page = 1} = {}) {
     try {
-        const { data } = await api.get(`/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&with_genres=${genreId}`);
+        console.log(page);
+        const { data } = await api.get(`/discover/movie`,{
+            params: {
+                include_adult: false,
+                include_video: false,
+                language: 'en-US',
+                sort_by: 'popularity.desc',
+                with_genres: genreId,
+                page: page
+            }
+        });
         const movies = data.results;
-        appendMovies(trendingMoviesArticle, movies);
+        console.log(data);
+        appendMovies(trendingMoviesArticle, movies, {clean: page == 1});
     } catch (err) {
         console.error(err);
     }
 }
-async function getSeriesByCategory(genreId) {
+async function getSeriesByCategory(genreId, {page = 1} = {}) {
     try {
-        const { data } = await api.get(`/discover/tv?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&with_genres=${genreId}`);
+        const { data } = await api.get(`/discover/tv`, {
+            params: { 
+                include_adult: false,
+                include_video: false,
+                language: 'en-US',
+                sort_by: 'popularity.desc',
+                with_genres: genreId,
+                page: page
+            }
+        });
         const series = data.results;
 
-        appendMovies(trendingMoviesArticle, series)
+        appendMovies(trendingMoviesArticle, series, {clean: page == 1})
     } catch (err) {
         throw Error(err)
     }
 }
-async function getMoviesAndSeriesBySearch(query) {
+async function getMoviesAndSeriesBySearch(query, {page = 1}={}) {
     try {
         const { data } = await api.get(`/search/multi`, {
             params: {
                 query: query,
-                page: '1'
+                page: page
             }
         });
         const multiResults = data.results;
         const multiResultsCleaned = multiResults.filter(element => element.media_type !== 'person');
-        appendMovies(trendingMoviesArticle, multiResultsCleaned);
+        appendMovies(trendingMoviesArticle, multiResultsCleaned, {clean: page == 1});
     } catch (err) {
         console.error(err);
     }
 }
 
-async function getTrends() {
-    const {data} = await api.get('/trending/movie/day');
-
-    const movies = data.results;
-    appendMovies(trendingMoviesArticle, movies);
-}
-const btnLoadPage = document.createElement('btn');
-btnLoadPage.classList.add('section-trending__btn');
-btnLoadPage.innerText = 'See More'
-sectionTrending.appendChild(btnLoadPage);
-
-btnLoadPage.addEventListener('click', getTrendsPage)
-
-let trendsPage = 1;
-async function getTrendsPage() {
-    trendsPage++
+async function getTrends({page = 1} = {}) {
     const {data} = await api.get('/trending/movie/day', {
         params: {
-            page: trendsPage
+            page: page
         }
     });
 
     const movies = data.results;
-    appendMovies(trendingMoviesArticle, movies, {clean: false});
+    appendMovies(trendingMoviesArticle, movies, {clean: page == 1});
 }
+
 async function getMovieById(id) {
     try {
         const { data: movie } = await api.get(`/movie/${id}`);
