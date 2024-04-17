@@ -324,6 +324,7 @@ async function getMoviesByCategory(genreId, {page = 1} = {}) {
         const movies = data.results;
         console.log(data);
         appendMovies(trendingMoviesArticle, movies, {clean: page == 1});
+        return data.total_pages
     } catch (err) {
         console.error(err);
     }
@@ -343,6 +344,7 @@ async function getSeriesByCategory(genreId, {page = 1} = {}) {
         const series = data.results;
 
         appendMovies(trendingMoviesArticle, series, {clean: page == 1})
+        return data.total_pages
     } catch (err) {
         throw Error(err)
     }
@@ -355,9 +357,13 @@ async function getMoviesAndSeriesBySearch(query, {page = 1}={}) {
                 page: page
             }
         });
+        console.log(data.total_pages);
+        console.log(data);
         const multiResults = data.results;
         const multiResultsCleaned = multiResults.filter(element => element.media_type !== 'person');
         appendMovies(trendingMoviesArticle, multiResultsCleaned, {clean: page == 1});
+
+        return data.total_pages
     } catch (err) {
         console.error(err);
     }
@@ -372,6 +378,7 @@ async function getTrends({page = 1} = {}) {
 
     const movies = data.results;
     appendMovies(trendingMoviesArticle, movies, {clean: page == 1});
+    return data.total_pages
 }
 
 async function getMovieById(id) {

@@ -67,24 +67,32 @@ function styleExploreSeriesBtn() {
 const infiniteScrollObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
-            loadMoreContent()
+            isNotMaxPage()
         }
     })
 })
 infiniteScrollObserver.observe(Node.infiniteScrollRef);
 let infiniteScrollPage = 1;
 let infiniteScrollFunction;
-function loadMoreContent() {
+let maxPages;
+function isNotMaxPage() {
     infiniteScrollPage++
-    console.log(infiniteScrollPage);
-    console.log(infiniteScrollFunction);
-    const fun = infiniteScrollFunction[0]
-    const param = infiniteScrollFunction[1]
-    if (param) {
-        fun(param, {page: infiniteScrollPage})
-    } else {
-        fun({page: infiniteScrollPage})
-    }
+    maxPages.then(maxPage => {
+        const isNotMaxPage = infiniteScrollPage <= maxPage;
+        if (isNotMaxPage) {
+            loadMoreContent();
+        }
+    })
+}
+function loadMoreContent() {
+        console.log('hola');
+        const fun = infiniteScrollFunction[0]
+        const param = infiniteScrollFunction[1]
+        if (param) {
+            fun(param, {page: infiniteScrollPage})
+        } else {
+            fun({page: infiniteScrollPage})
+        }
 }
 //
 function smoothScroll() {
@@ -169,10 +177,10 @@ function categoryPage() {
     const [genreId, genreName, media_type] = contentDescription.split('-');
     Node.exploreSubtitle.innerText = decodeURI(genreName);
     if (media_type == 'movies') {
-        getMoviesByCategory(genreId);
+        maxPages = getMoviesByCategory(genreId)
         infiniteScrollFunction = [getMoviesByCategory, genreId]
     } else {
-        getSeriesByCategory(genreId);
+        maxPages = getSeriesByCategory(genreId)
         infiniteScrollFunction = [getSeriesByCategory, genreId]
     }
 }
@@ -206,9 +214,9 @@ function searchPage() {
     const query = decodeURI(search).replace(new RegExp(" ", "g"), "+");
     console.log(query);
     Node.exploreSubtitle.innerText = `Results for ${decodeURI(search)}`;
-    getMoviesAndSeriesBySearch(query);
+    maxPages = getMoviesAndSeriesBySearch(query)
 
-    infiniteScrollFunction[getMoviesAndSeriesBySearch, query]
+    infiniteScrollFunction = [getMoviesAndSeriesBySearch, query]
 }
 
 function movieDetailsPage() {
@@ -285,6 +293,6 @@ function trendsPage() {
     Node.trailerPlayer.classList.add('inactive');
     Node.header.style.backgroundColor = '#090911';
     Node.movieDetailImg.style.backgroundImage = '';
-    getTrends();
+    maxPages = getTrends();
     infiniteScrollFunction = [getTrends]
 }
