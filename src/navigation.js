@@ -63,7 +63,38 @@ function styleExploreSeriesBtn() {
     Node.moviesGenresBtn.style.color = '#F1EEF5';
 }
 
-
+//Infinite scroll
+const infiniteScrollObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            isNotMaxPage()
+        }
+    })
+})
+infiniteScrollObserver.observe(Node.infiniteScrollRef);
+let infiniteScrollPage = 1;
+let infiniteScrollFunction;
+let maxPages;
+function isNotMaxPage() {
+    infiniteScrollPage++
+    maxPages.then(maxPage => {
+        const isNotMaxPage = infiniteScrollPage <= maxPage;
+        if (isNotMaxPage) {
+            loadMoreContent();
+        }
+    })
+}
+function loadMoreContent() {
+        console.log('hola');
+        const fun = infiniteScrollFunction[0]
+        const param = infiniteScrollFunction[1]
+        if (param) {
+            fun(param, {page: infiniteScrollPage})
+        } else {
+            fun({page: infiniteScrollPage})
+        }
+}
+//
 function smoothScroll() {
     const currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
     if (currentScroll > 0) {
@@ -72,6 +103,8 @@ function smoothScroll() {
     }
 };
 function navigator() {
+    console.log('hola');
+    infiniteScrollPage = 1;
     smoothScroll();
     if (location.hash.startsWith('#trends')) {
         trendsPage();
@@ -106,6 +139,7 @@ function homePage() {
     Node.sectionFilmDetail.classList.add('inactive');
     Node.trailerPlayer.classList.add('inactive');
     Node.exploreBtn.classList.remove('inactive');
+    Node.infiniteScrollRef.classList.add('inactive');
     Node.header.style.backgroundColor = 'rgba(30, 29, 27, 0.25)';
     Node.movieDetailImg.style.backgroundImage = '';
     getMovieHome();
@@ -131,6 +165,7 @@ function categoryPage() {
     Node.searchFormExplore.classList.add('inactive');
     Node.exploreTitle.classList.remove('inactive');
     Node.exploreSubtitle.classList.remove('inactive');
+    Node.infiniteScrollRef.classList.remove('inactive');
 
     Node.sectionTrending.classList.remove('inactive');
     Node.trendingFilmList.classList.add('section-trending__filmList--categories');
@@ -142,9 +177,11 @@ function categoryPage() {
     const [genreId, genreName, media_type] = contentDescription.split('-');
     Node.exploreSubtitle.innerText = decodeURI(genreName);
     if (media_type == 'movies') {
-        getMoviesByCategory(genreId);
+        maxPages = getMoviesByCategory(genreId)
+        infiniteScrollFunction = [getMoviesByCategory, genreId]
     } else {
-        getSeriesByCategory(genreId);
+        maxPages = getSeriesByCategory(genreId)
+        infiniteScrollFunction = [getSeriesByCategory, genreId]
     }
 }
 
@@ -164,6 +201,7 @@ function searchPage() {
     Node.searchResultsHeader.style.marginBottom = '20px';
     Node.exploreTitle.classList.remove('inactive');
     Node.exploreSubtitle.classList.remove('inactive');
+    Node.infiniteScrollRef.classList.remove('inactive');
     Node.exploreSubtitle.innerText = `Results for Stranger`
 
     Node.sectionTrending.classList.remove('inactive');
@@ -176,7 +214,9 @@ function searchPage() {
     const query = decodeURI(search).replace(new RegExp(" ", "g"), "+");
     console.log(query);
     Node.exploreSubtitle.innerText = `Results for ${decodeURI(search)}`;
-    getMoviesAndSeriesBySearch(query);
+    maxPages = getMoviesAndSeriesBySearch(query)
+
+    infiniteScrollFunction = [getMoviesAndSeriesBySearch, query]
 }
 
 function movieDetailsPage() {
@@ -245,6 +285,7 @@ function trendsPage() {
     Node.exploreSubtitle.classList.add('inactive');
     Node.searchFormExplore.classList.add('inactive');
     
+    Node.infiniteScrollRef.classList.remove('inactive');
     Node.sectionTrending.classList.remove('inactive');
     Node.trendingFilmList.classList.add('section-trending__filmList--categories');
     Node.trendingTitle.classList.remove('inactive');
@@ -252,5 +293,6 @@ function trendsPage() {
     Node.trailerPlayer.classList.add('inactive');
     Node.header.style.backgroundColor = '#090911';
     Node.movieDetailImg.style.backgroundImage = '';
-    getTrends();
+    maxPages = getTrends();
+    infiniteScrollFunction = [getTrends]
 }

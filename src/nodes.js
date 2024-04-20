@@ -55,3 +55,5 @@ export const sectionTrailerRate = document.querySelector('.section-trailer__rate
 export const trailerPlayer = document.querySelector('.trailer');
 export const trailerIcon = document.querySelector('.trailer__icon');
 export const trailerVideo = document.querySelector('.trailer__video');
+
+export const infiniteScrollRef = document.querySelector('.infinite-scroll-ref');

@@ -1,5 +1,5 @@
 import { API_KEY, API_KEY_TOKEN } from "./secrets.mjs";
-import { categoriesCards, filmDetailContainer, trendingMoviesArticle, movieDetailImg, relatedFilms, filmDetailTitle, filmDetailScore, filmDetailDuration, filmDetailRelease, filmDetailCategories, filmDetailDescription, homeImg, homeImgTitle, popularFilmList, homeExploreImg, moviesGenresBtn, sectionTrailerImg, sectionTrailerTitle, sectionTrailerDescription, sectionTrailerVideo, trailerVideo, trailerPlayer, sectionTrailer, sectionTrailerCast, filmDetailSubtitle, sectionTrailerRate, homeSectionImg} from "./nodes.js";
+import { categoriesCards, filmDetailContainer, trendingMoviesArticle, movieDetailImg, relatedFilms, filmDetailTitle, filmDetailScore, filmDetailDuration, filmDetailRelease, filmDetailCategories, filmDetailDescription, homeImg, homeImgTitle, popularFilmList, homeExploreImg, moviesGenresBtn, sectionTrailerImg, sectionTrailerTitle, sectionTrailerDescription, sectionTrailerVideo, trailerVideo, trailerPlayer, sectionTrailer, sectionTrailerCast, filmDetailSubtitle, sectionTrailerRate, homeSectionImg, sectionTrending} from "./nodes.js";
 const api = axios.create({
     baseURL: 'https://api.themoviedb.org/3',
     headers: {
@@ -74,9 +74,11 @@ async function getGenres(genres, apiUrl) {
     }
     
 }
-function appendMovies(container, movies, related = false, popular = false) {
-    while (container.firstChild) {
-        container.removeChild(container.firstChild);
+function appendMovies(container, movies, {related = false, popular = false, clean = true} = {}) {
+    if (clean) {
+        while (container.firstChild) {
+            container.removeChild(container.firstChild);
+        }
     }
     const moviesModified = isTrendsPreview(container, movies);
     container.scrollLeft = 0;
@@ -240,7 +242,7 @@ async function getPopularPreview() {
     const movies = data.results;
     movies.splice(3);
     popularFilmList.scrollLeft = 0;
-    appendMovies(popularFilmList, movies, false, true);
+    appendMovies(popularFilmList, movies, {popular: true});
 }
 async function getMovieSectionTrailer() {
     const movieTrailer = await getRandomMovieOrSeries();
@@ -336,46 +338,77 @@ async function getSeriesGenres() {
         console.error(err)
     }
 }  
-async function getMoviesByCategory(genreId) {
+async function getMoviesByCategory(genreId, {page = 1} = {}) {
     try {
-        const { data } = await api.get(`/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&with_genres=${genreId}`);
+        console.log(page);
+        const { data } = await api.get(`/discover/movie`,{
+            params: {
+                include_adult: false,
+                include_video: false,
+                language: 'en-US',
+                sort_by: 'popularity.desc',
+                with_genres: genreId,
+                page: page
+            }
+        });
         const movies = data.results;
-        appendMovies(trendingMoviesArticle, movies);
+        console.log(data);
+        appendMovies(trendingMoviesArticle, movies, {clean: page == 1});
+        return data.total_pages
     } catch (err) {
         console.error(err);
     }
 }
-async function getSeriesByCategory(genreId) {
+async function getSeriesByCategory(genreId, {page = 1} = {}) {
     try {
-        const { data } = await api.get(`/discover/tv?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&with_genres=${genreId}`);
+        const { data } = await api.get(`/discover/tv`, {
+            params: { 
+                include_adult: false,
+                include_video: false,
+                language: 'en-US',
+                sort_by: 'popularity.desc',
+                with_genres: genreId,
+                page: page
+            }
+        });
         const series = data.results;
 
-        appendMovies(trendingMoviesArticle, series)
+        appendMovies(trendingMoviesArticle, series, {clean: page == 1})
+        return data.total_pages
     } catch (err) {
         throw Error(err)
     }
 }
-async function getMoviesAndSeriesBySearch(query) {
+async function getMoviesAndSeriesBySearch(query, {page = 1}={}) {
     try {
         const { data } = await api.get(`/search/multi`, {
             params: {
                 query: query,
-                page: '1'
+                page: page
             }
         });
+        console.log(data.total_pages);
+        console.log(data);
         const multiResults = data.results;
         const multiResultsCleaned = multiResults.filter(element => element.media_type !== 'person');
-        appendMovies(trendingMoviesArticle, multiResultsCleaned);
+        appendMovies(trendingMoviesArticle, multiResultsCleaned, {clean: page == 1});
+
+        return data.total_pages
     } catch (err) {
         console.error(err);
     }
 }
-async function getTrends() {
-    const {data} = await api.get('/trending/movie/day');
-    console.log(data);
+
+async function getTrends({page = 1} = {}) {
+    const {data} = await api.get('/trending/movie/day', {
+        params: {
+            page: page
+        }
+    });
 
     const movies = data.results;
-    appendMovies(trendingMoviesArticle, movies);
+    appendMovies(trendingMoviesArticle, movies, {clean: page == 1});
+    return data.total_pages
 }
 
 async function getMovieById(id) {
@@ -386,7 +419,7 @@ async function getMovieById(id) {
         //Related movies
         const { data } = await api.get(`/movie/${id}/similar`);
         const relatedMovies = data.results;
-        appendMovies(relatedFilms, relatedMovies, true);
+        appendMovies(relatedFilms, relatedMovies, {related: true});
     } catch (err) {
         console.error(err);
     }
@@ -423,7 +456,7 @@ async function getSerieById(id) {
     const { data } = await api.get(`/tv/${id}/similar`);
     const relatedSeries = data.results;
     filmDetailSubtitle.innerText = 'Similar Series'
-    appendMovies(relatedFilms, relatedSeries, true);
+    appendMovies(relatedFilms, relatedSeries, {related: true});
 }
 function renderSeriesDetail(serie) {
     const imgDetails = getDetailImageSize(serie);
