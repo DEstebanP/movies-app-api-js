@@ -1,5 +1,5 @@
 import { API_KEY, API_KEY_TOKEN } from "./secrets.mjs";
-import { categoriesCards, filmDetailContainer, trendingMoviesArticle, movieDetailImg, relatedFilms, filmDetailTitle, filmDetailScore, filmDetailDuration, filmDetailRelease, filmDetailCategories, filmDetailDescription, homeImg, homeImgTitle, popularFilmList, homeExploreImg, moviesGenresBtn, sectionTrailerImg, sectionTrailerTitle, sectionTrailerDescription, sectionTrailerVideo, trailerVideo, trailerPlayer, sectionTrailer, sectionTrailerCast, filmDetailSubtitle, sectionTrailerRate, homeSectionImg, sectionTrending} from "./nodes.js";
+import { categoriesCards, filmDetailContainer, trendingMoviesArticle, movieDetailImg, relatedFilms, filmDetailTitle, filmDetailScore, filmDetailDuration, filmDetailRelease, filmDetailCategories, filmDetailDescription, homeImg, homeImgTitle, popularFilmList, homeExploreImg, moviesGenresBtn, sectionTrailerImg, sectionTrailerTitle, sectionTrailerDescription, sectionTrailerVideo, trailerVideo, trailerPlayer, sectionTrailer, sectionTrailerCast, filmDetailSubtitle, sectionTrailerRate, homeSectionImg, sectionTrending, favoriteList} from "./nodes.js";
 const api = axios.create({
     baseURL: 'https://api.themoviedb.org/3',
     headers: {
@@ -10,13 +10,16 @@ const api = axios.create({
 //1245
 // Utils
 //Lazy loading
+window.addEventListener('DOMContentLoaded', () => {
+    const likedMovies = getLikedMoviesList();
+    appendMovies(favoriteList, Object.values(likedMovies))
+});
 const observer = new IntersectionObserver(handleIntersect);
 observer.observe(sectionTrailerImg)
 
 function handleIntersect(entries, observer) {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
-            console.log(entry.isIntersecting);
             entry.target.src = entry.target.dataset.src;
         }
     })
@@ -127,6 +130,22 @@ function appendMovies(container, movies, {related = false, popular = false, clea
         movieRate.classList.add('film-rate');
         movieRate.innerText = `${movie.vote_average.toFixed(1)} ⭐`
 
+        //adding like button
+        const likeBtn = document.createElement('button');
+        likeBtn.classList.add('movie-btn');
+        likeBtn.addEventListener('click', (event) => {
+            event.stopPropagation();
+            likeBtn.classList.toggle('movie-btn--liked');
+            likedMovies(movie);
+        });
+
+        const likedMoviesList = Object.values(getLikedMoviesList());
+        likedMoviesList.forEach((likeMovie) => {
+            if (likeMovie.id == movie.id) {
+                likeBtn.classList.add('movie-btn--liked')
+            }
+        })
+
         if (popular) {
             const movieContentContainer = document.createElement('div');
             movieContentContainer.classList.add('film__container--secondary');
@@ -141,9 +160,9 @@ function appendMovies(container, movies, {related = false, popular = false, clea
             movieDescription.classList.add('film-description');
             movieDescription.innerText = isDescriptionTooLong(movie.overview);
             movieContentContainer.append(movieTitle,movieDescription ,movieYear, movieRate);
-            movieContainer.append(movieImg, movieContentContainer);
+            movieContainer.append(movieImg, likeBtn, movieContentContainer);
         } else {
-            movieContainer.append(movieImg, movieTitle, movieYear, movieRate);
+            movieContainer.append(movieImg, likeBtn,movieTitle, movieYear, movieRate);
         }
         observer.observe(movieImg);
         const { title, movieMediaType } = identifyMediaType(movie);
@@ -151,6 +170,27 @@ function appendMovies(container, movies, {related = false, popular = false, clea
         container.appendChild(movieContainer);
     });
 }
+
+function likedMovies(movie) {
+    const likedMovies = getLikedMoviesList();
+    if(likedMovies[movie.id]) {
+        delete likedMovies[movie.id]
+    } else {
+        likedMovies[movie.id] = movie
+    }
+    
+    localStorage.setItem("liked_movies", JSON.stringify(likedMovies))
+    appendMovies(favoriteList, Object.values(likedMovies))
+}
+function getLikedMoviesList() {
+    const likedMovies = JSON.parse(localStorage.getItem('liked_movies'))
+    if(likedMovies) {
+        return likedMovies
+    } else {
+        return {}
+    }
+}
+
 function isTrendsPreview(container, movies) {
     const screenWidth = window.innerWidth;
     const breakpointForLaptop = 1245;
