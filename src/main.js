@@ -12,12 +12,11 @@ const api = axios.create({
 // Utils
 //Lazy loading
 const observer = new IntersectionObserver(handleIntersect);
-observer.observe(sectionTrailerImg)
+observer.observe(Node.sectionTrailerImg)
 
 function handleIntersect(entries, observer) {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
-            console.log(entry.isIntersecting);
             entry.target.src = entry.target.dataset.src;
         }
     })
@@ -250,7 +249,7 @@ async function getMovieSectionTrailer() {
 
     const imgSize = getImageSize();
 
-    Node.sectionTrailerImg.src = 'https://image.tmdb.org/t/p/' + imgSize + movieTrailer.backdrop_path;
+    Node.sectionTrailerImg.setAttribute("data-src", 'https://image.tmdb.org/t/p/' + imgSize + movieTrailer.backdrop_path);
     Node.sectionTrailerTitle.innerText =  movieTrailer.media_type == 'tv' ? movieTrailer.name : movieTrailer.title;
     Node.sectionTrailerDescription.innerText = movieTrailer.overview;
     Node.sectionTrailerRate.innerText = `${movieTrailer.vote_average.toFixed(1)} ⭐`
